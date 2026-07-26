@@ -1,4 +1,48 @@
 .profile-form {
-  max-width: 480px;
   margin-top: var(--spacing-4);
+}
+
+.profile-form__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 var(--spacing-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-4);
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  ::ng-deep .ql-toolbar {
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-color: var(--color-border);
+    background: var(--color-surface);
+  }
+
+  ::ng-deep .ql-container {
+    border-radius: 0 0 var(--radius) var(--radius);
+    border-color: var(--color-border);
+    background: var(--color-surface);
+    font-size: 0.95rem;
+  }
+
+  .ql-editor-wrapper {
+    display: block;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius);
+    overflow: hidden;
+
+    ::ng-deep quill-editor {
+      display: block;
+      width: 100%;
+    }
+  }
 }

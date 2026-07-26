@@ -15,12 +15,15 @@
     padding: var(--spacing-2) var(--spacing-3);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
+    background: var(--color-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     font-size: 0.95rem;
     font-family: inherit;
 
     &:focus {
       outline: none;
       border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
   }
 

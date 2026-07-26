@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
 import { ProfileService } from './profile.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
@@ -10,7 +11,7 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputComponent, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, InputComponent, ButtonComponent, QuillModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
