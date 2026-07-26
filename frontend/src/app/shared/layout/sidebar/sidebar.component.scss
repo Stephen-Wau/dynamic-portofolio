@@ -4,8 +4,8 @@
   width: 220px;
   height: 100vh;
   padding: var(--spacing-4) var(--spacing-3);
-  background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
+  background: linear-gradient(160deg, var(--gradient-accent-start), var(--gradient-accent-end));
+  color: #fff;
 }
 
 .sidebar__profile {
@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--spacing-2);
   padding-bottom: var(--spacing-4);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .sidebar__avatar {
@@ -24,16 +24,26 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--color-primary);
-  color: #fff;
-  font-weight: 600;
+  background: #fff;
+  color: var(--color-danger);
+  font-weight: 700;
 }
 
 .sidebar__username {
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
   word-break: break-all;
   text-align: center;
+}
+
+// Override tombol Logout (variant ghost) supaya kebaca di atas background gradien.
+:host ::ng-deep .btn--ghost {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+  }
 }
 
 .sidebar__menu {
@@ -46,16 +56,17 @@
 .sidebar__menu-item {
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: var(--radius);
-  color: var(--color-text);
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   font-size: 0.9rem;
 
   &:hover {
-    background: var(--color-bg);
+    background: rgba(255, 255, 255, 0.15);
   }
 }
 
 .sidebar__menu-item--active {
-  background: var(--color-primary);
-  color: #fff;
+  background: #fff;
+  color: var(--color-danger);
+  font-weight: 600;
 }

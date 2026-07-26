@@ -7,6 +7,8 @@
   --color-border: #e5e7eb;
   --color-bg: #f9fafb;
   --color-surface: #ffffff;
+  --gradient-accent-start: #fdba74;
+  --gradient-accent-end: #f87171;
   --radius: 8px;
   --spacing-1: 4px;
   --spacing-2: 8px;
@@ -25,6 +27,11 @@ body {
     'Segoe UI',
     sans-serif;
   margin: 0;
+  min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-bg);
+  background:
+    radial-gradient(circle at 8% 15%, rgba(253, 186, 116, 0.24), transparent 55%),
+    radial-gradient(circle at 92% 85%, rgba(248, 113, 113, 0.2), transparent 55%),
+    var(--color-bg);
+  background-attachment: fixed;
 }
