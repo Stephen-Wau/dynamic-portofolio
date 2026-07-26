@@ -1,16 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"time"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+
+	"dynamic-portofolio/backend/internal/auth"
+	"dynamic-portofolio/backend/internal/config"
+	"dynamic-portofolio/backend/internal/db"
+	"dynamic-portofolio/backend/internal/handlers"
 )
 
 type healthResponse struct {
@@ -18,45 +18,48 @@ type healthResponse struct {
 	Database string `json:"database"`
 }
 
-func getEnv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
+// withCORS membungkus handler dengan header CORS & menangani preflight OPTIONS.
+func withCORS(frontendOrigin string, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", frontendOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next(w, r)
 	}
-	return fallback
 }
 
 func main() {
 	_ = godotenv.Load()
+	cfg := config.Load()
 
-	dbUser := getEnv("DB_USER", "root")
-	dbPassword := getEnv("DB_PASSWORD", "")
-	dbHost := getEnv("DB_HOST", "127.0.0.1")
-	dbPort := getEnv("DB_PORT", "3306")
-	dbName := getEnv("DB_NAME", "dynamic_portofolio")
-	frontendOrigin := getEnv("FRONTEND_ORIGIN", "http://localhost:4200")
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
-
-	db, err := sql.Open("mysql", dsn)
+	conn, err := db.Connect(cfg)
 	if err != nil {
 		log.Fatalf("failed to open database: %v", err)
 	}
-	defer db.Close()
-	db.SetConnMaxLifetime(time.Minute * 3)
+	defer conn.Close()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", frontendOrigin)
-		w.Header().Set("Content-Type", "application/json")
 
+	mux.HandleFunc("/health", withCORS(cfg.FrontendOrigin, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
 		resp := healthResponse{API: "ok"}
-		if err := db.Ping(); err != nil {
+		if err := conn.Ping(); err != nil {
 			resp.Database = "down"
 		} else {
 			resp.Database = "ok"
 		}
 		json.NewEncoder(w).Encode(resp)
-	})
+	}))
+
+	mux.HandleFunc("/api/auth/login", withCORS(cfg.FrontendOrigin,
+		handlers.LoginHandler(conn, cfg.JWTSecret, cfg.JWTExpiryHours)))
+
+	mux.HandleFunc("/api/auth/me", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.MeHandler)))
 
 	addr := "localhost:8080"
 	log.Printf("server listening on %s", addr)
