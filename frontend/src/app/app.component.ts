@@ -1,36 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
-interface HealthResponse {
-  api: string;
-  database: string;
-}
-
+// Shell aplikasi: cuma render route aktif, semua konten ada di masing-masing feature component.
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  title = 'Dynamic Portofolio';
-  apiStatus = 'checking...';
-  databaseStatus = 'checking...';
-
-  constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
-    this.http.get<HealthResponse>('http://localhost:8080/health').subscribe({
-      next: (res) => {
-        this.apiStatus = res.api;
-        this.databaseStatus = res.database;
-      },
-      error: () => {
-        this.apiStatus = 'unreachable';
-        this.databaseStatus = 'unreachable';
-      },
-    });
-  }
-}
+export class AppComponent {}

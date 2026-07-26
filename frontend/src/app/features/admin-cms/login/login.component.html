@@ -1,0 +1,19 @@
+<h1>Login CMS</h1>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label for="username">Username</label>
+    <input id="username" type="text" formControlName="username" />
+  </div>
+
+  <div>
+    <label for="password">Password</label>
+    <input id="password" type="password" formControlName="password" />
+  </div>
+
+  <p *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <button type="submit" [disabled]="form.invalid || isSubmitting">
+    {{ isSubmitting ? 'Logging in...' : 'Login' }}
+  </button>
+</form>
