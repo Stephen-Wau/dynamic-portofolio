@@ -16,8 +16,15 @@ export const routes: Routes = [
     path: 'admin-cms',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/admin-cms/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent,
-      ),
+      import('./shared/layout/cms-layout/cms-layout.component').then((m) => m.CmsLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/admin-cms/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent,
+          ),
+      },
+    ],
   },
 ];
