@@ -1,0 +1,19 @@
+<aside class="sidebar">
+  <div class="sidebar__profile">
+    <div class="sidebar__avatar">{{ (user?.username ?? '?').charAt(0).toUpperCase() }}</div>
+    <p class="sidebar__username">{{ user?.username ?? 'Loading...' }}</p>
+    <app-button variant="ghost" (click)="logout()">Logout</app-button>
+  </div>
+
+  <nav class="sidebar__menu">
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.path"
+      routerLinkActive="sidebar__menu-item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="sidebar__menu-item"
+    >
+      {{ item.label }}
+    </a>
+  </nav>
+</aside>

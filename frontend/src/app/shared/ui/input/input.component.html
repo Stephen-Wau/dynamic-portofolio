@@ -1,0 +1,13 @@
+<div class="field">
+  <label *ngIf="label" [for]="id">{{ label }}</label>
+  <input
+    [id]="id"
+    [type]="type"
+    [value]="value"
+    [disabled]="disabled"
+    [class.input--error]="errorMessage || invalid"
+    (input)="handleInput($any($event.target).value)"
+    (blur)="handleBlur()"
+  />
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
