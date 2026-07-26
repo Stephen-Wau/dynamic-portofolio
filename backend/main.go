@@ -61,6 +61,9 @@ func main() {
 	mux.HandleFunc("/api/auth/me", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.MeHandler)))
 
+	mux.HandleFunc("/api/profile", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.ProfileHandler(conn))))
+
 	addr := "localhost:8080"
 	log.Printf("server listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
