@@ -26,6 +26,9 @@ export class InputComponent implements ControlValueAccessor {
   @Input() errorMessage = '';
   // Paksa border error tanpa teks di bawah, dipakai buat error umum (ex: kredensial salah dari API).
   @Input() invalid = false;
+  // Render <textarea> dibanding <input>, dipakai buat field teks panjang (ex: about me).
+  @Input() multiline = false;
+  @Input() rows = 3;
 
   id = `app-input-${nextId++}`;
   value = '';

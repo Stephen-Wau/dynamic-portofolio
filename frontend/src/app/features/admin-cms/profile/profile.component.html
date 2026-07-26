@@ -1,0 +1,24 @@
+<h1>Profile</h1>
+
+<form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
+  <app-input label="Nama" formControlName="full_name" [errorMessage]="fieldError('full_name')"></app-input>
+  <app-input
+    label="Email"
+    type="email"
+    formControlName="email"
+    [errorMessage]="fieldError('email')"
+  ></app-input>
+  <app-input
+    label="No. WhatsApp"
+    formControlName="wa_number"
+    [errorMessage]="fieldError('wa_number')"
+  ></app-input>
+  <app-input label="LinkedIn" formControlName="linkedin"></app-input>
+  <app-input label="GitHub" formControlName="github"></app-input>
+  <app-input label="Kota / Domisili" formControlName="city"></app-input>
+  <app-input label="About Me" [multiline]="true" [rows]="5" formControlName="about_me"></app-input>
+
+  <app-button type="submit" [disabled]="isSaving">
+    {{ isSaving ? 'Menyimpan...' : 'Simpan' }}
+  </app-button>
+</form>

@@ -4,4 +4,7 @@ export interface CmsMenuItem {
 }
 
 // Daftar menu sidebar CMS, tambah item baru di sini kalau ada halaman CMS baru.
-export const CMS_MENU_ITEMS: CmsMenuItem[] = [{ label: 'Dashboard', path: '/admin-cms' }];
+export const CMS_MENU_ITEMS: CmsMenuItem[] = [
+  { label: 'Dashboard', path: '/admin-cms' },
+  { label: 'Profile', path: '/admin-cms/profile' },
+];
