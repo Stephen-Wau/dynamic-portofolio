@@ -17,6 +17,7 @@ type profileRequest struct {
 	Github   string `json:"github"`
 	City     string `json:"city"`
 	AboutMe  string `json:"about_me"`
+	Image    string `json:"image"`
 }
 
 // ProfileHandler menangani GET (ambil profil) & POST (simpan profil) untuk user yang sedang login.
@@ -71,6 +72,7 @@ func saveProfile(w http.ResponseWriter, r *http.Request, db *sql.DB, userID int6
 		Github:   req.Github,
 		City:     req.City,
 		AboutMe:  req.AboutMe,
+		Image:    req.Image,
 	}
 
 	if err := models.UpsertProfile(db, profile); err != nil {
