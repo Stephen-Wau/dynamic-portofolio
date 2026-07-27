@@ -2,7 +2,10 @@
   <div class="sidebar__profile">
     <div class="sidebar__avatar">{{ (user?.username ?? '?').charAt(0).toUpperCase() }}</div>
     <p class="sidebar__username">{{ user?.username ?? 'Loading...' }}</p>
-    <app-button variant="ghost" (click)="logout()">Logout</app-button>
+    <app-button variant="ghost" (click)="logout()">
+      <lucide-icon name="log-out" [size]="16"></lucide-icon>
+      Logout
+    </app-button>
   </div>
 
   <nav class="sidebar__menu">
@@ -13,6 +16,8 @@
       [routerLinkActiveOptions]="{ exact: true }"
       class="sidebar__menu-item"
     >
+      <lucide-icon *ngIf="item.icon === 'dashboard'" name="layout-dashboard" [size]="18"></lucide-icon>
+      <lucide-icon *ngIf="item.icon === 'profile'" name="user" [size]="18"></lucide-icon>
       {{ item.label }}
     </a>
   </nav>

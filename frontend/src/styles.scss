@@ -22,6 +22,11 @@
   box-sizing: border-box;
 }
 
+lucide-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
 body {
   font-family:
     system-ui,

@@ -17,6 +17,7 @@
     ></app-input>
 
     <app-button type="submit" [disabled]="form.invalid || isSubmitting">
+      <lucide-icon name="log-in" [size]="16"></lucide-icon>
       {{ isSubmitting ? 'Logging in...' : 'Login' }}
     </app-button>
   </form>

@@ -49,24 +49,44 @@
 .sidebar__menu {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--spacing-2);
   margin-top: var(--spacing-4);
 }
 
 .sidebar__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: var(--radius);
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-size: 0.9rem;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    transform: translateX(4px);
   }
 }
 
 .sidebar__menu-item--active {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.95);
   color: var(--color-danger);
   font-weight: 600;
+  transform: translateX(4px);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.18),
+    inset 3px 0 0 var(--color-danger);
+
+  &:hover {
+    background: #fff;
+    color: var(--color-danger);
+    transform: translateX(4px);
+  }
 }
