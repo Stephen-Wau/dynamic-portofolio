@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { LucideAngularModule } from 'lucide-angular';
-import { ProfileService } from './profile.service';
+import { ProfileService } from '../../../core/profile/profile.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-upload.component';

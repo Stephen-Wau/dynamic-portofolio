@@ -1,6 +1,9 @@
 <aside class="sidebar">
   <div class="sidebar__profile">
-    <div class="sidebar__avatar">{{ (user?.username ?? '?').charAt(0).toUpperCase() }}</div>
+    <div class="sidebar__avatar">
+      <img *ngIf="profileService.image() as image" [src]="image" alt="Foto profil" />
+      <span *ngIf="!profileService.image()">{{ (user?.username ?? '?').charAt(0).toUpperCase() }}</span>
+    </div>
     <p class="sidebar__username">{{ user?.username ?? 'Loading...' }}</p>
     <app-button variant="ghost" (click)="logout()">
       <lucide-icon name="log-out" [size]="16"></lucide-icon>
