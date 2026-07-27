@@ -22,14 +22,19 @@
     <app-input label="Kota / Domisili" formControlName="city"></app-input>
   </div>
 
-  <div class="field">
-    <label>About Me</label>
-    <div class="ql-editor-wrapper">
-      <quill-editor formControlName="about_me" [styles]="{ height: '200px' }"></quill-editor>
+  <div class="profile-form__row profile-form__row--split">
+    <div class="field">
+      <label>About Me</label>
+      <div class="ql-editor-wrapper">
+        <quill-editor formControlName="about_me" [styles]="{ height: '200px' }"></quill-editor>
+      </div>
     </div>
+
+    <app-image-upload label="Foto Profil" formControlName="image"></app-image-upload>
   </div>
 
   <app-button type="submit" [disabled]="isSaving">
+    <lucide-icon name="save" [size]="16"></lucide-icon>
     {{ isSaving ? 'Menyimpan...' : 'Simpan' }}
   </app-button>
 </form>

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 export type ButtonVariant = 'primary' | 'ghost' | 'danger';
+export type ButtonSize = 'sm' | 'md';
 
 // Tombol global, dipakai ulang di semua form/aksi CMS lewat <app-button>.
 @Component({
@@ -11,6 +12,7 @@ export type ButtonVariant = 'primary' | 'ghost' | 'danger';
 })
 export class ButtonComponent {
   @Input() variant: ButtonVariant = 'primary';
+  @Input() size: ButtonSize = 'md';
   @Input() type: 'button' | 'submit' = 'button';
   @Input() disabled = false;
 }

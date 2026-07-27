@@ -2,16 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
+import { LucideAngularModule } from 'lucide-angular';
 import { ProfileService } from './profile.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-upload.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 
-// Halaman edit profil CMS, route /admin-cms/profile.
+// Halaman edit profil CMS, route /admin-cms/profile. Icon (Save) didaftarkan di main.ts.
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputComponent, ButtonComponent, QuillModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent,
+    ButtonComponent,
+    ImageUploadComponent,
+    QuillModule,
+    LucideAngularModule,
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -32,6 +42,7 @@ export class ProfileComponent implements OnInit {
       github: [''],
       city: [''],
       about_me: [''],
+      image: [''],
     });
   }
 

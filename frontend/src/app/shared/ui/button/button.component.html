@@ -1,3 +1,8 @@
-<button [type]="type" [disabled]="disabled" class="btn" [class]="'btn--' + variant">
+<button
+  [type]="type"
+  [disabled]="disabled"
+  class="btn"
+  [class]="'btn--' + variant + ' btn--' + size"
+>
   <ng-content></ng-content>
 </button>

@@ -46,3 +46,9 @@
     color: #fff;
   }
 }
+
+.btn--sm {
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: 0.8rem;
+  gap: var(--spacing-1);
+}

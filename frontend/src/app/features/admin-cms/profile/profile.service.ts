@@ -12,6 +12,7 @@ export interface Profile {
   github: string;
   city: string;
   about_me: string;
+  image: string;
 }
 
 // Hit API /api/profile milik user yang sedang login. Auth header nempel otomatis lewat authInterceptor.

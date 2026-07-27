@@ -8,6 +8,11 @@
   gap: 0 var(--spacing-3);
 }
 
+.profile-form__row--split {
+  grid-template-columns: 2fr 1fr;
+  align-items: start;
+}
+
 .field {
   display: flex;
   flex-direction: column;
