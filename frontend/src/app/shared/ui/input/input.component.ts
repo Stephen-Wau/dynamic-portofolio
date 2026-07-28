@@ -37,27 +37,33 @@ export class InputComponent implements ControlValueAccessor {
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
 
+  // Dipanggil Angular forms saat set value dari luar (ex: patchValue pas load data existing).
   writeValue(value: string): void {
     this.value = value ?? '';
   }
 
+  // Daftarin callback yang dipanggil handleInput tiap kali user ngetik.
   registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 
+  // Daftarin callback yang dipanggil handleBlur (nandain field udah "disentuh").
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
+  // Dipanggil Angular forms saat FormControl di-disable/enable (ex: mode read-only).
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
+  // Sinkronin value lokal + kasih tau FormControl tiap kali user ngetik di input/textarea.
   handleInput(value: string): void {
     this.value = value;
     this.onChange(value);
   }
 
+  // Tandain field "touched" begitu kehilangan fokus, biar pesan validasi baru muncul setelahnya.
   handleBlur(): void {
     this.onTouched();
   }

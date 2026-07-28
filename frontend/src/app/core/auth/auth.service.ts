@@ -45,6 +45,7 @@ export class AuthService {
     return this.http.get<CurrentUser>(`${environment.apiUrl}/api/auth/me`);
   }
 
+  // Dipakai interceptor buat nempelin header Authorization ke tiap request BE.
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }

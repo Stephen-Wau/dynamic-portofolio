@@ -36,18 +36,22 @@ export class ImageUploadComponent implements ControlValueAccessor {
 
   constructor(private toast: ToastService) {}
 
+  // Dipanggil Angular forms saat set value dari luar (ex: patchValue pas load data existing).
   writeValue(value: string | null): void {
     this.value = value || null;
   }
 
+  // Daftarin callback yang dipanggil handleFileSelected/remove tiap value berubah.
   registerOnChange(fn: (value: string | null) => void): void {
     this.onChange = fn;
   }
 
+  // Daftarin callback yang dipanggil buat nandain field udah "disentuh" (dipakai validasi touched).
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
+  // Dipanggil Angular forms saat FormControl di-disable/enable (ex: mode read-only).
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
@@ -80,6 +84,7 @@ export class ImageUploadComponent implements ControlValueAccessor {
     reader.readAsDataURL(file);
   }
 
+  // Hapus gambar terpilih/tersimpan, dipanggil dari tombol "Hapus" di preview.
   remove(): void {
     this.value = null;
     this.onChange(null);

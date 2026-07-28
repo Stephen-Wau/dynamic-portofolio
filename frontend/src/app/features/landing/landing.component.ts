@@ -22,6 +22,7 @@ export class LandingComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
+  // Cek konektivitas ke BE + DB saat landing page dibuka, cuma buat placeholder health-check.
   ngOnInit(): void {
     this.http.get<HealthResponse>(`${environment.apiUrl}/health`).subscribe({
       next: (res) => {

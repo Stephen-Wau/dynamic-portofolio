@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 
+// Route tree aplikasi. Semua halaman CMS jadi children di bawah 'admin-cms' (dibungkus
+// CmsLayoutComponent + authGuard), jadi otomatis dapet sidebar & proteksi login.
 export const routes: Routes = [
   {
     path: '',

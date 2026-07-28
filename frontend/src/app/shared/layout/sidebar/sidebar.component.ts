@@ -32,6 +32,7 @@ export class SidebarComponent implements OnInit {
     this.profileService.get().subscribe({ error: () => {} });
   }
 
+  // Hapus token & lempar balik ke halaman login, dipanggil dari tombol Logout.
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/admin-cms/login']);
