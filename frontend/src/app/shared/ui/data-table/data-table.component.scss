@@ -1,0 +1,50 @@
+// ngx-datatable render DOM internal sendiri (bukan <table> biasa), jadi styling-nya lewat
+// ::ng-deep nimpa class bawaan library supaya kebentuk sesuai desain surface/border kita.
+// Dipusatkan di sini biar semua menu yang pakai <app-data-table> otomatis konsisten.
+:host {
+  display: block;
+}
+
+.app-data-table {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  ::ng-deep {
+    .datatable-header {
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .datatable-header-cell {
+      padding: var(--spacing-3);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .datatable-body-row {
+      border-bottom: 1px solid var(--color-border);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: var(--color-bg);
+      }
+    }
+
+    .datatable-body-cell {
+      padding: var(--spacing-3);
+      display: flex;
+      align-items: center;
+    }
+
+    .empty-row {
+      padding: var(--spacing-3);
+      color: var(--color-text-muted);
+      text-align: left;
+    }
+  }
+}
