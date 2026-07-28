@@ -9,7 +9,8 @@ export interface Toast {
 }
 
 let nextId = 0;
-const AUTO_DISMISS_MS = 4000;
+// Diexport supaya ToastContainerComponent bisa sinkronin animasi border countdown ke durasi yang sama persis.
+export const AUTO_DISMISS_MS = 4000;
 
 // Store toast global, dipanggil dari komponen manapun lewat inject(ToastService) buat nampilin notifikasi pop-up.
 @Injectable({ providedIn: 'root' })

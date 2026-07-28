@@ -3,6 +3,7 @@
     *ngFor="let toast of toastService.toasts()"
     class="toast"
     [class]="'toast--' + toast.type"
+    [style.--toast-duration.ms]="dismissMs"
   >
     <span class="toast__icon" [ngSwitch]="toast.type">
       <svg *ngSwitchCase="'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
