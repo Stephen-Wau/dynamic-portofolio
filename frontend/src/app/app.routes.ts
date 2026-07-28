@@ -32,6 +32,13 @@ export const routes: Routes = [
             (m) => m.ProfileComponent,
           ),
       },
+      {
+        path: 'work-histories',
+        loadComponent: () =>
+          import('./features/admin-cms/work-histories/work-histories.component').then(
+            (m) => m.WorkHistoriesComponent,
+          ),
+      },
     ],
   },
 ];

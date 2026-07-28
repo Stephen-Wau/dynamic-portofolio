@@ -1,0 +1,109 @@
+<div class="work-histories__header">
+  <h1>Work Histories</h1>
+  <app-button (click)="openCreateModal()">
+    <lucide-icon name="plus" [size]="16"></lucide-icon>
+    Tambah
+  </app-button>
+</div>
+
+<ng-template #periodeTpl let-row="row">
+  {{ formatPeriod($any(row)) }}
+</ng-template>
+
+<ng-template #aksiTpl let-row="row">
+  <div class="work-histories__actions">
+    <app-button variant="ghost" size="sm" (click)="openShowModal($any(row))">
+      <lucide-icon name="eye" [size]="14"></lucide-icon>
+      Lihat
+    </app-button>
+    <app-button variant="ghost" size="sm" (click)="openEditModal($any(row))">
+      <lucide-icon name="pencil" [size]="14"></lucide-icon>
+      Edit
+    </app-button>
+    <app-button variant="danger" size="sm" (click)="remove($any(row))">
+      <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+      Hapus
+    </app-button>
+  </div>
+</ng-template>
+
+<app-data-table
+  [rows]="histories"
+  [columns]="columns"
+  emptyMessage="Belum ada riwayat kerja. Klik &quot;Tambah&quot; untuk menambahkan."
+></app-data-table>
+
+<app-modal
+  [open]="isModalOpen"
+  [title]="isReadOnly ? 'Detail Riwayat Kerja' : (editingId ? 'Edit Riwayat Kerja' : 'Tambah Riwayat Kerja')"
+  (closed)="closeModal()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <app-input
+      label="Nama Kantor / Tempat Bekerja *"
+      formControlName="company_name"
+      [errorMessage]="fieldError('company_name')"
+    ></app-input>
+
+    <div class="work-histories__date-row">
+      <app-input
+        label="Mulai *"
+        type="month"
+        formControlName="start_date"
+        [errorMessage]="fieldError('start_date')"
+      ></app-input>
+      <app-input
+        label="Selesai *"
+        type="month"
+        formControlName="end_date"
+        [errorMessage]="fieldError('end_date')"
+        *ngIf="!form.get('stillWorking')?.value"
+      ></app-input>
+    </div>
+
+    <label class="work-histories__checkbox">
+      <input type="checkbox" formControlName="stillWorking" />
+      Masih bekerja di sini
+    </label>
+
+    <div class="work-histories__points">
+      <label>Poin Pekerjaan *</label>
+      <div formArrayName="points">
+        <div
+          class="work-histories__point-row"
+          *ngFor="let point of points.controls; let i = index"
+        >
+          <app-input [formControlName]="i" [errorMessage]="pointError(i)"></app-input>
+          <button
+            type="button"
+            class="work-histories__point-remove"
+            (click)="removePoint(i)"
+            *ngIf="points.length > 1 && !isReadOnly"
+          >
+            <lucide-icon name="x" [size]="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+      <app-button
+        variant="ghost"
+        size="sm"
+        type="button"
+        (click)="addPoint()"
+        *ngIf="!isReadOnly"
+      >
+        <lucide-icon name="plus" [size]="14"></lucide-icon>
+        Tambah Poin
+      </app-button>
+    </div>
+
+    <div class="work-histories__form-actions">
+      <app-button variant="ghost" type="button" (click)="closeModal()">
+        {{ isReadOnly ? 'Tutup' : 'Batal' }}
+      </app-button>
+      <app-button type="submit" [disabled]="isSaving" *ngIf="!isReadOnly">
+        <lucide-icon name="save" [size]="16"></lucide-icon>
+        {{ isSaving ? 'Menyimpan...' : 'Simpan' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>

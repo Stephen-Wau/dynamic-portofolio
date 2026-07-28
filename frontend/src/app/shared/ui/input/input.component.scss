@@ -25,6 +25,13 @@
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
+
+    &:disabled {
+      background: var(--color-bg);
+      color: var(--color-text-muted);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
   }
 
   textarea {

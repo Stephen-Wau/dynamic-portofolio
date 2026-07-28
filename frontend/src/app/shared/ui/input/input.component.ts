@@ -22,7 +22,7 @@ let nextId = 0;
 })
 export class InputComponent implements ControlValueAccessor {
   @Input() label = '';
-  @Input() type: 'text' | 'password' | 'email' = 'text';
+  @Input() type: 'text' | 'password' | 'email' | 'month' = 'text';
   @Input() errorMessage = '';
   // Paksa border error tanpa teks di bawah, dipakai buat error umum (ex: kredensial salah dari API).
   @Input() invalid = false;

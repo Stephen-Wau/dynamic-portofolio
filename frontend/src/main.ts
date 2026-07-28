@@ -12,6 +12,11 @@ import {
   ImagePlus,
   RefreshCw,
   Trash2,
+  Plus,
+  Pencil,
+  Briefcase,
+  X,
+  Eye,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -31,6 +36,11 @@ bootstrapApplication(AppComponent, {
         ImagePlus,
         RefreshCw,
         Trash2,
+        Plus,
+        Pencil,
+        Briefcase,
+        X,
+        Eye,
       }),
     ),
   ],

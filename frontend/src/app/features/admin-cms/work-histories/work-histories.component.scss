@@ -1,0 +1,71 @@
+.work-histories__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4);
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.work-histories__actions {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.work-histories__date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--spacing-3);
+}
+
+.work-histories__checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0 0 var(--spacing-3);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.work-histories__points {
+  margin-bottom: var(--spacing-4);
+
+  > label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-1);
+  }
+}
+
+.work-histories__point-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+
+  app-input {
+    flex: 1;
+  }
+}
+
+.work-histories__point-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: var(--spacing-2) 0;
+
+  &:hover {
+    color: var(--color-danger);
+  }
+}
+
+.work-histories__form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
