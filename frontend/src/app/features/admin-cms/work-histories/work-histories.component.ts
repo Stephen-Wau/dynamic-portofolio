@@ -89,9 +89,9 @@ export class WorkHistoriesComponent implements OnInit {
   // Load daftar riwayat kerja begitu halaman dibuka + susun kolom tabel (pakai template cell custom).
   ngOnInit(): void {
     this.columns = [
-      { name: 'Perusahaan', prop: 'company_name' },
-      { name: 'Periode', cellTemplate: this.periodeTpl },
-      { name: 'Aksi', sortable: false, cellTemplate: this.aksiTpl },
+      { name: 'Company', prop: 'company_name' },
+      { name: 'Period', cellTemplate: this.periodeTpl },
+      { name: 'Action', sortable: false, cellTemplate: this.aksiTpl },
     ];
     this.loadHistories();
   }

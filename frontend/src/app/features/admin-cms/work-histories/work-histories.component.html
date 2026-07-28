@@ -2,7 +2,7 @@
   <h1>Work Histories</h1>
   <app-button (click)="openCreateModal()">
     <lucide-icon name="plus" [size]="16"></lucide-icon>
-    Tambah
+    Add
   </app-button>
 </div>
 
@@ -14,7 +14,7 @@
   <div class="work-histories__actions">
     <app-button variant="ghost" size="sm" (click)="openShowModal($any(row))">
       <lucide-icon name="eye" [size]="14"></lucide-icon>
-      Lihat
+      Show
     </app-button>
     <app-button variant="ghost" size="sm" (click)="openEditModal($any(row))">
       <lucide-icon name="pencil" [size]="14"></lucide-icon>
@@ -22,7 +22,7 @@
     </app-button>
     <app-button variant="danger" size="sm" (click)="remove($any(row))">
       <lucide-icon name="trash-2" [size]="14"></lucide-icon>
-      Hapus
+      Delete
     </app-button>
   </div>
 </ng-template>
@@ -30,7 +30,7 @@
 <app-data-table
   [rows]="histories"
   [columns]="columns"
-  emptyMessage="Belum ada riwayat kerja. Klik &quot;Tambah&quot; untuk menambahkan."
+  emptyMessage="Belum ada riwayat kerja. Klik &quot;Add&quot; untuk menambahkan."
 ></app-data-table>
 
 <app-modal
@@ -92,17 +92,17 @@
         *ngIf="!isReadOnly"
       >
         <lucide-icon name="plus" [size]="14"></lucide-icon>
-        Tambah Poin
+        Add Point
       </app-button>
     </div>
 
     <div class="work-histories__form-actions">
       <app-button variant="ghost" type="button" (click)="closeModal()">
-        {{ isReadOnly ? 'Tutup' : 'Batal' }}
+        {{ isReadOnly ? 'Close' : 'Cancel' }}
       </app-button>
       <app-button type="submit" [disabled]="isSaving" *ngIf="!isReadOnly">
         <lucide-icon name="save" [size]="16"></lucide-icon>
-        {{ isSaving ? 'Menyimpan...' : 'Simpan' }}
+        {{ isSaving ? 'Saving...' : 'Save' }}
       </app-button>
     </div>
   </form>
