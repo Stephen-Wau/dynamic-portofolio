@@ -10,11 +10,13 @@ import (
 	"dynamic-portofolio/backend/internal/models"
 )
 
+// loginRequest bentuk body POST /api/auth/login.
 type loginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+// loginResponse dikirim balik ke FE setelah login sukses; token dipakai FE buat header Authorization.
 type loginResponse struct {
 	Token     string `json:"token"`
 	ExpiresAt string `json:"expires_at"`

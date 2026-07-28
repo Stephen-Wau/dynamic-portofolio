@@ -38,6 +38,8 @@ func getEnv(key, fallback string) string {
 }
 
 // getEnvInt sama seperti getEnv tapi untuk nilai integer (jam expiry token).
+// Parsing manual digit-by-digit (bukan strconv.Atoi) sengaja simpel: cuma perlu terima
+// bilangan bulat positif, karakter non-digit apa pun langsung dianggap invalid → fallback.
 func getEnvInt(key string, fallback int) int {
 	v := os.Getenv(key)
 	if v == "" {

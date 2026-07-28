@@ -16,6 +16,8 @@ func RequireAuth(secret string, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		header := r.Header.Get("Authorization")
 		tokenString := strings.TrimPrefix(header, "Bearer ")
+		// tokenString == header berarti prefix "Bearer " gak ketemu sama sekali (TrimPrefix no-op),
+		// jadi header-nya emang bukan format Bearer token yang valid.
 		if tokenString == "" || tokenString == header {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return

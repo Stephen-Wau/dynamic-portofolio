@@ -32,6 +32,8 @@ func main() {
 		log.Fatalf("failed to hash password: %v", err)
 	}
 
+	// Upsert: kalau username udah ada, cuma update password_hash-nya — jadi command ini
+	// aman dijalankan berkali-kali (ex: buat reset password admin) tanpa bikin user duplikat.
 	_, err = conn.Exec(
 		"INSERT INTO users (username, password_hash) VALUES (?, ?) ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash)",
 		adminUsername, hash,
