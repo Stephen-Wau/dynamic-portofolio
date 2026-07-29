@@ -34,6 +34,7 @@
   [totalCount]="totalCount"
   [pageSize]="pageSize"
   (search)="onTableQueryChange($event)"
+  (refresh)="loadEducations()"
   searchPlaceholder="Search place or major..."
   emptyMessage="Belum ada riwayat pendidikan. Klik &quot;Add&quot; untuk menambahkan."
 ></app-data-table>

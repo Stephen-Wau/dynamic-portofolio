@@ -34,6 +34,7 @@
   [totalCount]="totalCount"
   [pageSize]="pageSize"
   (search)="onTableQueryChange($event)"
+  (refresh)="loadHistories()"
   searchPlaceholder="Search company..."
   emptyMessage="Belum ada riwayat kerja. Klik &quot;Add&quot; untuk menambahkan."
 ></app-data-table>

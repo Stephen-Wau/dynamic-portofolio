@@ -1,11 +1,21 @@
-<div class="app-data-table__search" *ngIf="searchable">
-  <input
-    type="text"
-    [ngModel]="searchTerm"
-    (ngModelChange)="searchTerm = $event; onSearchChange()"
-    [placeholder]="searchPlaceholder"
-    class="app-data-table__search-input"
-  />
+<div class="app-data-table__toolbar">
+  <div class="app-data-table__search" *ngIf="searchable">
+    <input
+      type="text"
+      [ngModel]="searchTerm"
+      (ngModelChange)="searchTerm = $event; onSearchChange()"
+      [placeholder]="searchPlaceholder"
+      class="app-data-table__search-input"
+    />
+  </div>
+  <button
+    type="button"
+    class="app-data-table__refresh"
+    title="Refresh"
+    (click)="onRefreshClick()"
+  >
+    <lucide-icon name="refresh-cw" [size]="16"></lucide-icon>
+  </button>
 </div>
 
 <ngx-datatable

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, Templ
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxDatatableModule, SortEvent } from '@swimlane/ngx-datatable';
+import { LucideAngularModule } from 'lucide-angular';
 
 // Definisi 1 kolom: `prop` buat nampilin value langsung, atau `cellTemplate` buat cell custom
 // (ex: format tanggal, tombol aksi). `prop` tetap wajib diisi biar sort jalan walau kolomnya
@@ -49,7 +50,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxDatatableModule],
+  imports: [CommonModule, FormsModule, NgxDatatableModule, LucideAngularModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
 })
@@ -70,6 +71,9 @@ export class DataTableComponent implements OnChanges {
   @Input() pageSize = 10;
 
   @Output() search = new EventEmitter<DataTableQuery>();
+  // Dipancing tombol refresh di sebelah search box — parent tinggal panggil ulang load list-nya
+  // pakai query/halaman yang lagi aktif (gak perlu reset search/sort/page).
+  @Output() refresh = new EventEmitter<void>();
 
   searchTerm = '';
   currentPage = 1; // 1-indexed, dipakai buat kirim `page` ke BE & offset ke ngx-datatable
@@ -116,6 +120,11 @@ export class DataTableComponent implements OnChanges {
     if (!this.serverSide) return;
     this.currentPage = event.offset + 1; // ngx-datatable offset 0-indexed
     this.emitQuery();
+  }
+
+  // Dipanggil dari tombol refresh — biarin parent yang panggil ulang API-nya sendiri.
+  onRefreshClick(): void {
+    this.refresh.emit();
   }
 
   private emitQuery(): void {
