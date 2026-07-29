@@ -12,22 +12,7 @@ import {
   DataTableQuery,
 } from '../../../shared/ui/data-table/data-table.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
-
-// Label bulan Indonesia dipakai formatMonth(), index 0 = Januari.
-const MONTH_LABELS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'Mei',
-  'Jun',
-  'Jul',
-  'Agu',
-  'Sep',
-  'Okt',
-  'Nov',
-  'Des',
-];
+import { formatPeriod } from '../../../shared/utils/month-format.util';
 
 // Halaman CRUD riwayat pendidikan CMS, route /admin-cms/education.
 @Component({
@@ -133,14 +118,7 @@ export class EducationComponent implements OnInit {
 
   // Format "YYYY-MM" jadi "Agu 2025", atau "Sekarang" kalau null (masih menempuh pendidikan itu).
   formatPeriod(education: Education): string {
-    const start = this.formatMonth(education.start_date);
-    const end = education.end_date ? this.formatMonth(education.end_date) : 'Sekarang';
-    return `${start} – ${end}`;
-  }
-
-  private formatMonth(yyyymm: string): string {
-    const [year, month] = yyyymm.split('-').map(Number);
-    return `${MONTH_LABELS[month - 1]} ${year}`;
+    return formatPeriod(education.start_date, education.end_date);
   }
 
   // Dipakai template buat nampilin pesan validation di bawah field.
