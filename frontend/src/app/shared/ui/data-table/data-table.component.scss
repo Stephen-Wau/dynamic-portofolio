@@ -111,5 +111,123 @@
       color: var(--color-text-muted);
       text-align: left;
     }
+
+    .datatable-footer {
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+
+      .app-data-table__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 var(--spacing-3);
+        height: 40px;
+      }
+
+      .app-data-table__footer-count {
+        flex-shrink: 0;
+      }
+
+      .datatable-pager {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        ul {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-1);
+        }
+
+        li {
+          list-style: none;
+        }
+
+        // Jarak ekstra antara grup "first/prev", nomor halaman, dan grup "next/last",
+        // biar gak keliatan numpuk jadi satu blok padat.
+        li:nth-child(2) {
+          margin-right: var(--spacing-1);
+        }
+
+        li.pages:last-of-type {
+          margin-right: var(--spacing-1);
+        }
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 30px;
+          height: 30px;
+          padding: 0 var(--spacing-2);
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius);
+          background: var(--color-surface);
+          color: var(--color-text-muted);
+          font-size: 0.85rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+          &:hover {
+            background: var(--color-bg);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+          }
+        }
+
+        li.pages.active a {
+          background: var(--color-primary);
+          border-color: var(--color-primary);
+          color: #fff;
+        }
+
+        li.disabled a {
+          opacity: 0.4;
+          cursor: default;
+          pointer-events: none;
+
+          &:hover {
+            background: var(--color-surface);
+            border-color: var(--color-border);
+            color: var(--color-text-muted);
+          }
+        }
+
+        // Panah pager pakai teks unicode lewat ::before, bukan icon font — index.css bawaan
+        // ngx-datatable gak nyertain @font-face buat class datatable-icon-*, jadi kalau dibiarkan
+        // default bakal render kotak kosong.
+        .app-pager-icon {
+          font-style: normal;
+          line-height: 1;
+
+          &::before {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: 700;
+            transform: scaleY(1.3);
+          }
+        }
+
+        .app-pager-icon--first::before {
+          content: '\ab'; // «
+        }
+
+        .app-pager-icon--prev::before {
+          content: '\2039'; // ‹
+        }
+
+        .app-pager-icon--next::before {
+          content: '\203a'; // ›
+        }
+
+        .app-pager-icon--last::before {
+          content: '\bb'; // »
+        }
+      }
+    }
   }
 }

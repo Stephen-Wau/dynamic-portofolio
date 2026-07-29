@@ -53,6 +53,11 @@ export class WorkHistoriesComponent implements OnInit {
 
   histories: WorkHistory[] = [];
   columns: DataTableColumn[] = [];
+  // Total baris di BE (meta.total) — dikirim ke <app-data-table [totalCount]> buat hitung pager.
+  totalCount = 0;
+  // Ukuran halaman aktual yang dipakai BE (meta.per_page) — bisa beda dari default kalau BE
+  // punya default sendiri, jadi pager di FE mesti ikut nilai ini, bukan asumsi sendiri.
+  pageSize = 10;
   isModalOpen = false;
   isSaving = false;
   // null = mode create (tombol "Tambah"), terisi id = mode edit/lihat (row yang lagi dibuka).
@@ -114,7 +119,11 @@ export class WorkHistoriesComponent implements OnInit {
   // tiap habis create/update/delete.
   loadHistories(): void {
     this.workHistoryService.list(this.currentQuery).subscribe({
-      next: (histories) => (this.histories = histories),
+      next: ({ data, meta }) => {
+        this.histories = data;
+        this.totalCount = meta.total;
+        this.pageSize = meta.per_page;
+      },
       error: () => this.toast.error('Gagal memuat riwayat kerja.'),
     });
   }

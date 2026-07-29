@@ -19,6 +19,22 @@ export interface DataTableQuery {
   searchword?: string;
   sort_by?: string;
   sort_dir?: 'asc' | 'desc';
+  page?: number;
+  per_page?: number;
+}
+
+// Bentuk meta pagination standar yang dibalikin semua API list BE (lihat listquery.Meta di Go).
+export interface DataTableMeta {
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+}
+
+// Bentuk response standar semua API list: {"data": [...], "meta": {...}}.
+export interface PagedResult<T> {
+  data: T[];
+  meta: DataTableMeta;
 }
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -48,10 +64,15 @@ export class DataTableComponent implements OnChanges {
   @Input() searchKeys: string[] = [];
   // true = search/sort di-emit ke parent (panggil API), bukan difilter/sort di client.
   @Input() serverSide = false;
+  // Total baris di server (dari meta.total) — cuma dipakai mode serverSide buat hitung pager.
+  @Input() totalCount = 0;
+  // Jumlah baris per halaman — harus sinkron sama per_page yang diminta ke BE.
+  @Input() pageSize = 10;
 
   @Output() search = new EventEmitter<DataTableQuery>();
 
   searchTerm = '';
+  currentPage = 1; // 1-indexed, dipakai buat kirim `page` ke BE & offset ke ngx-datatable
   // Property biasa (bukan getter!) — sengaja, karena ngx-datatable ngecek reference [rows] tiap
   // change-detection cycle. Getter yang manggil .filter() bakal selalu balikin array reference
   // baru tiap cycle, bikin ngx-datatable ngira data berubah terus-menerus → infinite render loop.
@@ -74,7 +95,10 @@ export class DataTableComponent implements OnChanges {
       return;
     }
     if (this.searchDebounceHandle) clearTimeout(this.searchDebounceHandle);
-    this.searchDebounceHandle = setTimeout(() => this.emitQuery(), SEARCH_DEBOUNCE_MS);
+    this.searchDebounceHandle = setTimeout(() => {
+      this.currentPage = 1; // search baru selalu balik ke halaman 1
+      this.emitQuery();
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   // Dipanggil dari (sort) ngx-datatable. Mode server: emit query baru ke parent (BE yang sort).
@@ -83,6 +107,14 @@ export class DataTableComponent implements OnChanges {
     if (!this.serverSide) return;
     const sort = event.sorts?.[0];
     this.lastSort = sort ? { prop: String(sort.prop), dir: sort.dir as 'asc' | 'desc' } : null;
+    this.currentPage = 1; // sort baru selalu balik ke halaman 1
+    this.emitQuery();
+  }
+
+  // Dipanggil dari (page) ngx-datatable (klik nomor halaman/prev/next di footer pager).
+  onPage(event: { offset: number }): void {
+    if (!this.serverSide) return;
+    this.currentPage = event.offset + 1; // ngx-datatable offset 0-indexed
     this.emitQuery();
   }
 
@@ -91,6 +123,8 @@ export class DataTableComponent implements OnChanges {
       searchword: this.searchTerm.trim() || undefined,
       sort_by: this.lastSort?.prop,
       sort_dir: this.lastSort?.dir,
+      page: this.currentPage,
+      per_page: this.pageSize,
     });
   }
 

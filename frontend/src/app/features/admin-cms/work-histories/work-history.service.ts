@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { DataTableQuery } from '../../../shared/ui/data-table/data-table.component';
+import { DataTableQuery, PagedResult } from '../../../shared/ui/data-table/data-table.component';
 
 export interface WorkHistory {
   id: number;
@@ -23,14 +23,17 @@ export class WorkHistoryService {
   constructor(private http: HttpClient) {}
 
   // Ambil riwayat kerja milik user yang login, dipakai isi tabel. `query` diteruskan apa adanya
-  // sebagai query string ke BE (?searchword=...&sort_by=...&sort_dir=...), BE yang search & sort.
-  list(query: DataTableQuery = {}): Observable<WorkHistory[]> {
+  // sebagai query string ke BE (?searchword=...&sort_by=...&sort_dir=...&page=...&per_page=...),
+  // BE yang search/sort/paginate. Response dibungkus {data, meta} (meta.total buat pager FE).
+  list(query: DataTableQuery = {}): Observable<PagedResult<WorkHistory>> {
     let params = new HttpParams();
     if (query.searchword) params = params.set('searchword', query.searchword);
     if (query.sort_by) params = params.set('sort_by', query.sort_by);
     if (query.sort_dir) params = params.set('sort_dir', query.sort_dir);
+    if (query.page) params = params.set('page', query.page);
+    if (query.per_page) params = params.set('per_page', query.per_page);
 
-    return this.http.get<WorkHistory[]>(this.baseUrl, { params });
+    return this.http.get<PagedResult<WorkHistory>>(this.baseUrl, { params });
   }
 
   // Bikin riwayat kerja baru. BE balikin 409 (plain text) kalau tanggalnya overlap.

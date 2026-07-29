@@ -27,24 +27,31 @@ type WorkHistory struct {
 	Points      []string `json:"points"`
 }
 
-// ListWorkHistoriesByUser ambil riwayat kerja user, dengan dukungan search (company_name) &
-// sort (whitelist workHistorySortColumns) dari query param standar via listquery.Params.
-func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) ([]WorkHistory, error) {
-	query := `SELECT id, user_id, company_name, start_date, end_date FROM work_histories WHERE user_id = ?`
+// ListWorkHistoriesByUser ambil riwayat kerja user (dengan search/sort/pagination dari
+// listquery.Params), plus total baris yang match filter (buat listquery.Meta, sebelum LIMIT).
+func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) ([]WorkHistory, int, error) {
+	whereClause := " WHERE user_id = ?"
 	args := []interface{}{userID}
 
 	// searchword dicari di company_name aja (satu-satunya kolom teks bebas di tabel ini).
 	if params.SearchWord != "" {
-		query += " AND company_name LIKE ?"
+		whereClause += " AND company_name LIKE ?"
 		args = append(args, "%"+params.SearchWord+"%")
 	}
 
+	var total int
+	if err := db.QueryRow("SELECT COUNT(*) FROM work_histories"+whereClause, args...).Scan(&total); err != nil {
+		return nil, 0, err
+	}
+
 	sortCol := params.SortColumn(workHistorySortColumns, "start_date")
-	query += fmt.Sprintf(" ORDER BY %s %s", sortCol, params.SortDirSQL())
+	query := "SELECT id, user_id, company_name, start_date, end_date FROM work_histories" + whereClause +
+		fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, params.SortDirSQL())
+	args = append(args, params.PerPage, params.Offset())
 
 	rows, err := db.Query(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
@@ -57,7 +64,7 @@ func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) 
 			startDate, endDate sql.NullString
 		)
 		if err := rows.Scan(&wh.ID, &wh.UserID, &companyName, &startDate, &endDate); err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		wh.CompanyName = companyName.String
 		wh.StartDate = toMonth(startDate.String)
@@ -70,19 +77,19 @@ func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) 
 		ids = append(ids, wh.ID)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Ambil poin-poin semua history sekaligus (1 query tambahan) dibanding query per-baris di loop,
 	// biar gak N+1 query kalau riwayat kerjanya banyak.
 	pointsByHistory, err := pointsForHistories(db, ids)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	for i := range histories {
 		histories[i].Points = pointsByHistory[histories[i].ID]
 	}
-	return histories, nil
+	return histories, total, nil
 }
 
 // pointsForHistories ambil semua poin buat sekumpulan work_history id sekaligus (query pakai IN (...)),

@@ -74,18 +74,21 @@ func WorkHistoryHandler(db *sql.DB) http.HandlerFunc {
 }
 
 // listWorkHistories balikin riwayat kerja milik user yang sedang login, lengkap dengan poin-poinnya.
-// Support ?searchword=...&sort_by=...&sort_dir=asc|desc lewat listquery.Parse (kontrak standar
-// semua endpoint list yang FE-nya pakai DataTableComponent).
+// Support ?searchword=...&sort_by=...&sort_dir=asc|desc&page=...&per_page=... lewat listquery.Parse
+// (kontrak standar semua endpoint list yang FE-nya pakai DataTableComponent), dibungkus {data, meta}.
 func listWorkHistories(w http.ResponseWriter, r *http.Request, db *sql.DB, userID int64) {
 	params := listquery.Parse(r)
-	histories, err := models.ListWorkHistoriesByUser(db, userID, params)
+	histories, total, err := models.ListWorkHistoriesByUser(db, userID, params)
 	if err != nil {
 		http.Error(w, "failed to load work histories", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(histories)
+	json.NewEncoder(w).Encode(listquery.ListResponse[models.WorkHistory]{
+		Data: histories,
+		Meta: listquery.BuildMeta(params, total),
+	})
 }
 
 // validateWorkHistoryRequest cek field wajib & format tanggal di server, terlepas dari validasi
