@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"dynamic-portofolio/backend/internal/auth"
+	"dynamic-portofolio/backend/internal/listquery"
 	"dynamic-portofolio/backend/internal/models"
 )
 
@@ -35,7 +36,7 @@ func WorkHistoriesHandler(db *sql.DB) http.HandlerFunc {
 
 		switch r.Method {
 		case http.MethodGet:
-			listWorkHistories(w, db, claims.UserID)
+			listWorkHistories(w, r, db, claims.UserID)
 		case http.MethodPost:
 			createWorkHistory(w, r, db, claims.UserID)
 		default:
@@ -72,9 +73,12 @@ func WorkHistoryHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-// listWorkHistories balikin semua riwayat kerja milik user yang sedang login, lengkap dengan poin-poinnya.
-func listWorkHistories(w http.ResponseWriter, db *sql.DB, userID int64) {
-	histories, err := models.ListWorkHistoriesByUser(db, userID)
+// listWorkHistories balikin riwayat kerja milik user yang sedang login, lengkap dengan poin-poinnya.
+// Support ?searchword=...&sort_by=...&sort_dir=asc|desc lewat listquery.Parse (kontrak standar
+// semua endpoint list yang FE-nya pakai DataTableComponent).
+func listWorkHistories(w http.ResponseWriter, r *http.Request, db *sql.DB, userID int64) {
+	params := listquery.Parse(r)
+	histories, err := models.ListWorkHistoriesByUser(db, userID, params)
 	if err != nil {
 		http.Error(w, "failed to load work histories", http.StatusInternalServerError)
 		return

@@ -30,6 +30,9 @@
 <app-data-table
   [rows]="histories"
   [columns]="columns"
+  [serverSide]="true"
+  (search)="onTableQueryChange($event)"
+  searchPlaceholder="Search company..."
   emptyMessage="Belum ada riwayat kerja. Klik &quot;Add&quot; untuk menambahkan."
 ></app-data-table>
 

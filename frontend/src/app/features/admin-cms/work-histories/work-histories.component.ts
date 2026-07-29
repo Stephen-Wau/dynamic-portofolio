@@ -6,7 +6,11 @@ import { WorkHistory, WorkHistoryService } from './work-history.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ModalComponent } from '../../../shared/ui/modal/modal.component';
-import { DataTableColumn, DataTableComponent } from '../../../shared/ui/data-table/data-table.component';
+import {
+  DataTableColumn,
+  DataTableComponent,
+  DataTableQuery,
+} from '../../../shared/ui/data-table/data-table.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 
 // Label bulan Indonesia dipakai formatMonth(), index 0 = Januari.
@@ -55,6 +59,9 @@ export class WorkHistoriesComponent implements OnInit {
   editingId: number | null = null;
   // true kalau modal dibuka dari tombol "Lihat" — form di-disable, cuma buat baca, gak bisa submit.
   isReadOnly = false;
+  // Query search/sort terakhir dari <app-data-table>, disimpan biar loadHistories() abis
+  // create/update/delete tetap pakai filter/sort yang lagi aktif (bukan reset ke default).
+  private currentQuery: DataTableQuery = {};
 
   form: ReturnType<FormBuilder['group']>;
 
@@ -90,7 +97,9 @@ export class WorkHistoriesComponent implements OnInit {
   ngOnInit(): void {
     this.columns = [
       { name: 'Company', prop: 'company_name' },
-      { name: 'Period', cellTemplate: this.periodeTpl },
+      // prop: 'start_date' dipasang biar sort jalan (ngx-datatable sort berdasarkan prop, bukan
+      // hasil render cellTemplate), meskipun yang ditampilin tetap format "Periode" custom.
+      { name: 'Period', prop: 'start_date', cellTemplate: this.periodeTpl },
       { name: 'Action', sortable: false, cellTemplate: this.aksiTpl },
     ];
     this.loadHistories();
@@ -101,12 +110,20 @@ export class WorkHistoriesComponent implements OnInit {
     return this.form.get('points') as FormArray;
   }
 
-  // Ambil ulang daftar riwayat kerja dari BE, dipanggil saat init dan tiap habis create/update/delete.
+  // Ambil ulang daftar riwayat kerja dari BE (pakai currentQuery), dipanggil saat init dan
+  // tiap habis create/update/delete.
   loadHistories(): void {
-    this.workHistoryService.list().subscribe({
+    this.workHistoryService.list(this.currentQuery).subscribe({
       next: (histories) => (this.histories = histories),
       error: () => this.toast.error('Gagal memuat riwayat kerja.'),
     });
+  }
+
+  // Dipanggil dari (search) <app-data-table> tiap search box atau sort header berubah
+  // (serverSide=true) — simpan query barunya, lalu fetch ulang dari BE.
+  onTableQueryChange(query: DataTableQuery): void {
+    this.currentQuery = query;
+    this.loadHistories();
   }
 
   // Format "YYYY-MM" jadi "Agu 2025", atau "Sekarang" kalau null (masih bekerja di sana).

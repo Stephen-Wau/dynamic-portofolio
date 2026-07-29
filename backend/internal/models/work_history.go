@@ -5,7 +5,17 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"dynamic-portofolio/backend/internal/listquery"
 )
+
+// workHistorySortColumns whitelist kolom yang boleh dipakai buat ORDER BY dari query param
+// sort_by (FE ngirim `col.prop`) → nama kolom SQL asli. WAJIB pakai whitelist ini, jangan
+// pernah interpolate sort_by mentah-mentah ke SQL (SQL injection).
+var workHistorySortColumns = map[string]string{
+	"company_name": "company_name",
+	"start_date":   "start_date",
+}
 
 // WorkHistory satu entri riwayat kerja milik user, beserta poin-poin pekerjaannya.
 type WorkHistory struct {
@@ -17,14 +27,22 @@ type WorkHistory struct {
 	Points      []string `json:"points"`
 }
 
-// ListWorkHistoriesByUser ambil semua riwayat kerja user, urut dari yang terbaru, lengkap dengan poin-poinnya.
-func ListWorkHistoriesByUser(db *sql.DB, userID int64) ([]WorkHistory, error) {
-	// Query utama: ambil semua baris work_histories milik user, terbaru duluan.
-	rows, err := db.Query(
-		`SELECT id, user_id, company_name, start_date, end_date
-		 FROM work_histories WHERE user_id = ? ORDER BY start_date DESC`,
-		userID,
-	)
+// ListWorkHistoriesByUser ambil riwayat kerja user, dengan dukungan search (company_name) &
+// sort (whitelist workHistorySortColumns) dari query param standar via listquery.Params.
+func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) ([]WorkHistory, error) {
+	query := `SELECT id, user_id, company_name, start_date, end_date FROM work_histories WHERE user_id = ?`
+	args := []interface{}{userID}
+
+	// searchword dicari di company_name aja (satu-satunya kolom teks bebas di tabel ini).
+	if params.SearchWord != "" {
+		query += " AND company_name LIKE ?"
+		args = append(args, "%"+params.SearchWord+"%")
+	}
+
+	sortCol := params.SortColumn(workHistorySortColumns, "start_date")
+	query += fmt.Sprintf(" ORDER BY %s %s", sortCol, params.SortDirSQL())
+
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}

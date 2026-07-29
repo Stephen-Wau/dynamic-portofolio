@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { DataTableQuery } from '../../../shared/ui/data-table/data-table.component';
 
 export interface WorkHistory {
   id: number;
@@ -21,9 +22,15 @@ export class WorkHistoryService {
 
   constructor(private http: HttpClient) {}
 
-  // Ambil semua riwayat kerja milik user yang login, dipakai isi tabel.
-  list(): Observable<WorkHistory[]> {
-    return this.http.get<WorkHistory[]>(this.baseUrl);
+  // Ambil riwayat kerja milik user yang login, dipakai isi tabel. `query` diteruskan apa adanya
+  // sebagai query string ke BE (?searchword=...&sort_by=...&sort_dir=...), BE yang search & sort.
+  list(query: DataTableQuery = {}): Observable<WorkHistory[]> {
+    let params = new HttpParams();
+    if (query.searchword) params = params.set('searchword', query.searchword);
+    if (query.sort_by) params = params.set('sort_by', query.sort_by);
+    if (query.sort_dir) params = params.set('sort_dir', query.sort_dir);
+
+    return this.http.get<WorkHistory[]>(this.baseUrl, { params });
   }
 
   // Bikin riwayat kerja baru. BE balikin 409 (plain text) kalau tanggalnya overlap.
