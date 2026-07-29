@@ -14,6 +14,9 @@ import {
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
 import { fieldError } from '../../../shared/utils/form-error.util';
+import { toggleOptionalEndDate } from '../../../shared/utils/optional-end-date.util';
+import { confirmAndDelete } from '../../../shared/utils/confirm-delete.util';
+import { loadPagedList } from '../../../shared/utils/load-paged-list.util';
 
 // Halaman CRUD riwayat pendidikan CMS, route /admin-cms/education.
 @Component({
@@ -72,16 +75,7 @@ export class EducationComponent implements OnInit {
     });
 
     // end_date cuma wajib diisi kalau "Masih menempuh pendidikan ini" TIDAK dicentang.
-    this.form.get('stillStudying')!.valueChanges.subscribe((stillStudying) => {
-      const endDate = this.form.get('end_date')!;
-      if (stillStudying) {
-        endDate.clearValidators();
-        endDate.setValue('');
-      } else {
-        endDate.setValidators(Validators.required);
-      }
-      endDate.updateValueAndValidity();
-    });
+    toggleOptionalEndDate(this.form, 'stillStudying', 'end_date');
   }
 
   // Load daftar riwayat pendidikan begitu halaman dibuka + susun kolom tabel (pakai template cell custom).
@@ -100,14 +94,16 @@ export class EducationComponent implements OnInit {
   // Ambil ulang daftar riwayat pendidikan dari BE (pakai currentQuery), dipanggil saat init dan
   // tiap habis create/update/delete.
   loadEducations(): void {
-    this.educationService.list(this.currentQuery).subscribe({
-      next: ({ data, meta }) => {
+    loadPagedList(
+      this.educationService.list(this.currentQuery),
+      this.toast,
+      'Gagal memuat riwayat pendidikan.',
+      (data, totalCount, pageSize) => {
         this.educations = data;
-        this.totalCount = meta.total;
-        this.pageSize = meta.per_page;
+        this.totalCount = totalCount;
+        this.pageSize = pageSize;
       },
-      error: () => this.toast.error('Gagal memuat riwayat pendidikan.'),
-    });
+    );
   }
 
   // Dipanggil dari (search) <app-data-table> tiap search box atau sort header berubah
@@ -214,17 +210,15 @@ export class EducationComponent implements OnInit {
     });
   }
 
-  // Hapus riwayat pendidikan setelah konfirmasi native browser (window.confirm — cukup buat aksi
-  // destruktif sederhana ini, gak perlu component confirm dialog terpisah).
+  // Hapus riwayat pendidikan setelah konfirmasi.
   remove(education: Education): void {
-    if (!window.confirm(`Hapus riwayat pendidikan di "${education.place}"?`)) return;
-
-    this.educationService.delete(education.id).subscribe({
-      next: () => {
-        this.toast.success('Riwayat pendidikan dihapus.');
-        this.loadEducations();
-      },
-      error: () => this.toast.error('Gagal menghapus riwayat pendidikan.'),
-    });
+    confirmAndDelete(
+      `Hapus riwayat pendidikan di "${education.place}"?`,
+      () => this.educationService.delete(education.id),
+      this.toast,
+      'Riwayat pendidikan dihapus.',
+      'Gagal menghapus riwayat pendidikan.',
+      () => this.loadEducations(),
+    );
   }
 }

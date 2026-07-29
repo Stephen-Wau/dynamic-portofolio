@@ -14,6 +14,9 @@ import {
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
 import { fieldError } from '../../../shared/utils/form-error.util';
+import { toggleOptionalEndDate } from '../../../shared/utils/optional-end-date.util';
+import { confirmAndDelete } from '../../../shared/utils/confirm-delete.util';
+import { loadPagedList } from '../../../shared/utils/load-paged-list.util';
 
 // Halaman CRUD riwayat kerja CMS, route /admin-cms/work-histories.
 @Component({
@@ -72,16 +75,7 @@ export class WorkHistoriesComponent implements OnInit {
     });
 
     // end_date cuma wajib diisi kalau "Masih bekerja di sini" TIDAK dicentang.
-    this.form.get('stillWorking')!.valueChanges.subscribe((stillWorking) => {
-      const endDate = this.form.get('end_date')!;
-      if (stillWorking) {
-        endDate.clearValidators();
-        endDate.setValue('');
-      } else {
-        endDate.setValidators(Validators.required);
-      }
-      endDate.updateValueAndValidity();
-    });
+    toggleOptionalEndDate(this.form, 'stillWorking', 'end_date');
   }
 
   // Load daftar riwayat kerja begitu halaman dibuka + susun kolom tabel (pakai template cell custom).
@@ -104,14 +98,16 @@ export class WorkHistoriesComponent implements OnInit {
   // Ambil ulang daftar riwayat kerja dari BE (pakai currentQuery), dipanggil saat init dan
   // tiap habis create/update/delete.
   loadHistories(): void {
-    this.workHistoryService.list(this.currentQuery).subscribe({
-      next: ({ data, meta }) => {
+    loadPagedList(
+      this.workHistoryService.list(this.currentQuery),
+      this.toast,
+      'Gagal memuat riwayat kerja.',
+      (data, totalCount, pageSize) => {
         this.histories = data;
-        this.totalCount = meta.total;
-        this.pageSize = meta.per_page;
+        this.totalCount = totalCount;
+        this.pageSize = pageSize;
       },
-      error: () => this.toast.error('Gagal memuat riwayat kerja.'),
-    });
+    );
   }
 
   // Dipanggil dari (search) <app-data-table> tiap search box atau sort header berubah
@@ -244,17 +240,15 @@ export class WorkHistoriesComponent implements OnInit {
     });
   }
 
-  // Hapus riwayat kerja setelah konfirmasi native browser (window.confirm — cukup buat aksi
-  // destruktif sederhana ini, gak perlu component confirm dialog terpisah).
+  // Hapus riwayat kerja setelah konfirmasi.
   remove(history: WorkHistory): void {
-    if (!window.confirm(`Hapus riwayat kerja di "${history.company_name}"?`)) return;
-
-    this.workHistoryService.delete(history.id).subscribe({
-      next: () => {
-        this.toast.success('Riwayat kerja dihapus.');
-        this.loadHistories();
-      },
-      error: () => this.toast.error('Gagal menghapus riwayat kerja.'),
-    });
+    confirmAndDelete(
+      `Hapus riwayat kerja di "${history.company_name}"?`,
+      () => this.workHistoryService.delete(history.id),
+      this.toast,
+      'Riwayat kerja dihapus.',
+      'Gagal menghapus riwayat kerja.',
+      () => this.loadHistories(),
+    );
   }
 }
