@@ -5,6 +5,30 @@
   display: block;
 }
 
+.app-data-table__search {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-3);
+}
+
+.app-data-table__search-input {
+  width: 260px;
+  max-width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-size: 0.9rem;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+}
+
 .app-data-table {
   background: var(--color-surface);
   border-radius: var(--radius);
@@ -21,6 +45,47 @@
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--color-text-muted);
+    }
+
+    // Indikator sort custom (panah atas/bawah pakai CSS border-triangle), gak perlu icon font
+    // bawaan ngx-datatable. Default abu-abu redup, warna primary + solid pas kolom itu lagi di-sort.
+    .sort-btn {
+      position: relative;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-left: var(--spacing-1);
+      vertical-align: middle;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        opacity: 0.35;
+      }
+
+      &::before {
+        top: -3px;
+        border-bottom: 4px solid var(--color-text-muted);
+      }
+
+      &::after {
+        top: 3px;
+        border-top: 4px solid var(--color-text-muted);
+      }
+    }
+
+    .sort-btn.sort-asc::before {
+      opacity: 1;
+      border-bottom-color: var(--color-primary);
+    }
+
+    .sort-btn.sort-desc::after {
+      opacity: 1;
+      border-top-color: var(--color-primary);
     }
 
     .datatable-body-row {

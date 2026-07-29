@@ -1,9 +1,11 @@
-import { Component, Input, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { FormsModule } from '@angular/forms';
+import { NgxDatatableModule, SortEvent } from '@swimlane/ngx-datatable';
 
 // Definisi 1 kolom: `prop` buat nampilin value langsung, atau `cellTemplate` buat cell custom
-// (ex: format tanggal, tombol aksi). Kalau keduanya diisi, cellTemplate yang menang.
+// (ex: format tanggal, tombol aksi). `prop` tetap wajib diisi biar sort jalan walau kolomnya
+// pakai cellTemplate custom (ngx-datatable sort berdasarkan `prop`, bukan hasil render template).
 export interface DataTableColumn {
   name: string;
   prop?: string;
@@ -11,17 +13,111 @@ export interface DataTableColumn {
   cellTemplate?: TemplateRef<unknown>;
 }
 
+// Kontrak query param standar buat semua API list yang FE-nya pakai <app-data-table serverSide>.
+// Dikirim apa adanya sebagai query string BE: ?searchword=...&sort_by=...&sort_dir=asc|desc.
+export interface DataTableQuery {
+  searchword?: string;
+  sort_by?: string;
+  sort_dir?: 'asc' | 'desc';
+}
+
+const SEARCH_DEBOUNCE_MS = 300;
+
 // Tabel global reusable, dipakai semua menu CMS yang butuh list data lewat <app-data-table>.
-// Bungkus ngx-datatable + styling standar, tiap menu tinggal kasih rows/columns sendiri.
+// Bungkus ngx-datatable + styling standar + search box.
+//
+// Dua mode:
+// - serverSide=false (default): search & sort dikerjakan di client, cocok buat tabel kecil.
+// - serverSide=true: search & sort di-emit lewat (search)/(sortChange), parent yang manggil ulang
+//   API pakai DataTableQuery — dipakai kalau BE sudah support ?searchword/&sort_by/&sort_dir.
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, NgxDatatableModule],
+  imports: [CommonModule, FormsModule, NgxDatatableModule],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
 })
-export class DataTableComponent {
+export class DataTableComponent implements OnChanges {
   @Input() rows: unknown[] = [];
   @Input() columns: DataTableColumn[] = [];
   @Input() emptyMessage = 'Tidak ada data.';
+  // Set false buat sembunyiin search box (ex: tabel kecil yang gak butuh filter).
+  @Input() searchable = true;
+  @Input() searchPlaceholder = 'Search...';
+  // Field yang dicari (mode client-side); kosong = cari di semua kolom yang punya `prop`.
+  @Input() searchKeys: string[] = [];
+  // true = search/sort di-emit ke parent (panggil API), bukan difilter/sort di client.
+  @Input() serverSide = false;
+
+  @Output() search = new EventEmitter<DataTableQuery>();
+
+  searchTerm = '';
+  // Property biasa (bukan getter!) — sengaja, karena ngx-datatable ngecek reference [rows] tiap
+  // change-detection cycle. Getter yang manggil .filter() bakal selalu balikin array reference
+  // baru tiap cycle, bikin ngx-datatable ngira data berubah terus-menerus → infinite render loop.
+  filteredRows: unknown[] = [];
+
+  private searchDebounceHandle?: ReturnType<typeof setTimeout>;
+  private lastSort: { prop: string; dir: 'asc' | 'desc' } | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['rows'] || changes['columns']) {
+      this.applyFilter();
+    }
+  }
+
+  // Dipanggil dari (ngModelChange) search box. Mode client: filter langsung. Mode server:
+  // debounce dulu (biar gak nge-hit API tiap ketikan huruf) baru emit ke parent.
+  onSearchChange(): void {
+    if (!this.serverSide) {
+      this.applyFilter();
+      return;
+    }
+    if (this.searchDebounceHandle) clearTimeout(this.searchDebounceHandle);
+    this.searchDebounceHandle = setTimeout(() => this.emitQuery(), SEARCH_DEBOUNCE_MS);
+  }
+
+  // Dipanggil dari (sort) ngx-datatable. Mode server: emit query baru ke parent (BE yang sort).
+  // Mode client: biarin ngx-datatable sort sendiri secara internal (gak perlu handle apa-apa).
+  onSort(event: SortEvent): void {
+    if (!this.serverSide) return;
+    const sort = event.sorts?.[0];
+    this.lastSort = sort ? { prop: String(sort.prop), dir: sort.dir as 'asc' | 'desc' } : null;
+    this.emitQuery();
+  }
+
+  private emitQuery(): void {
+    this.search.emit({
+      searchword: this.searchTerm.trim() || undefined,
+      sort_by: this.lastSort?.prop,
+      sort_dir: this.lastSort?.dir,
+    });
+  }
+
+  // Filter rows di client-side berdasarkan searchTerm — cuma dipakai kalau serverSide=false.
+  private applyFilter(): void {
+    if (this.serverSide) {
+      this.filteredRows = this.rows;
+      return;
+    }
+
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.filteredRows = this.rows;
+      return;
+    }
+
+    const keys =
+      this.searchKeys.length > 0
+        ? this.searchKeys
+        : this.columns.filter((c) => c.prop).map((c) => c.prop!);
+
+    this.filteredRows = this.rows.filter((row) =>
+      keys.some((key) =>
+        String((row as Record<string, unknown>)[key] ?? '')
+          .toLowerCase()
+          .includes(term),
+      ),
+    );
+  }
 }

@@ -1,11 +1,23 @@
+<div class="app-data-table__search" *ngIf="searchable">
+  <input
+    type="text"
+    [ngModel]="searchTerm"
+    (ngModelChange)="searchTerm = $event; onSearchChange()"
+    [placeholder]="searchPlaceholder"
+    class="app-data-table__search-input"
+  />
+</div>
+
 <ngx-datatable
   class="app-data-table"
-  [rows]="rows"
+  [rows]="filteredRows"
   [columnMode]="'force'"
   [headerHeight]="44"
   [rowHeight]="'auto'"
   [footerHeight]="0"
+  [externalSorting]="serverSide"
   [messages]="{ emptyMessage: emptyMessage }"
+  (sort)="onSort($event)"
 >
   <ngx-datatable-column
     *ngFor="let col of columns"
