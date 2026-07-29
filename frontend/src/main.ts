@@ -17,6 +17,7 @@ import {
   Briefcase,
   X,
   Eye,
+  GraduationCap,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -41,6 +42,7 @@ bootstrapApplication(AppComponent, {
         Briefcase,
         X,
         Eye,
+        GraduationCap,
       }),
     ),
   ],

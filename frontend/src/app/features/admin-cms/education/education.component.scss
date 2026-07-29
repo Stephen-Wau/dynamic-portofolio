@@ -1,0 +1,37 @@
+.education__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4);
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.education__actions {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.education__date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--spacing-3);
+}
+
+.education__checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin: 0 0 var(--spacing-3);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.education__form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}

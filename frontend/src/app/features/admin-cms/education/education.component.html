@@ -1,0 +1,90 @@
+<div class="education__header">
+  <h1>Education</h1>
+  <app-button (click)="openCreateModal()">
+    <lucide-icon name="plus" [size]="16"></lucide-icon>
+    Add
+  </app-button>
+</div>
+
+<ng-template #periodeTpl let-row="row">
+  {{ formatPeriod($any(row)) }}
+</ng-template>
+
+<ng-template #aksiTpl let-row="row">
+  <div class="education__actions">
+    <app-button variant="ghost" size="sm" (click)="openShowModal($any(row))">
+      <lucide-icon name="eye" [size]="14"></lucide-icon>
+      Show
+    </app-button>
+    <app-button variant="ghost" size="sm" (click)="openEditModal($any(row))">
+      <lucide-icon name="pencil" [size]="14"></lucide-icon>
+      Edit
+    </app-button>
+    <app-button variant="danger" size="sm" (click)="remove($any(row))">
+      <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+      Delete
+    </app-button>
+  </div>
+</ng-template>
+
+<app-data-table
+  [rows]="educations"
+  [columns]="columns"
+  [serverSide]="true"
+  [totalCount]="totalCount"
+  [pageSize]="pageSize"
+  (search)="onTableQueryChange($event)"
+  searchPlaceholder="Search place or major..."
+  emptyMessage="Belum ada riwayat pendidikan. Klik &quot;Add&quot; untuk menambahkan."
+></app-data-table>
+
+<app-modal
+  [open]="isModalOpen"
+  [title]="isReadOnly ? 'Detail Riwayat Pendidikan' : (editingId ? 'Edit Riwayat Pendidikan' : 'Tambah Riwayat Pendidikan')"
+  (closed)="closeModal()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <app-input
+      label="Tempat Pendidikan *"
+      formControlName="place"
+      [errorMessage]="fieldError('place')"
+    ></app-input>
+
+    <app-input
+      label="Jurusan *"
+      formControlName="major"
+      [errorMessage]="fieldError('major')"
+    ></app-input>
+
+    <div class="education__date-row">
+      <app-input
+        label="Mulai *"
+        type="month"
+        formControlName="start_date"
+        [errorMessage]="fieldError('start_date')"
+      ></app-input>
+      <app-input
+        label="Selesai *"
+        type="month"
+        formControlName="end_date"
+        [errorMessage]="fieldError('end_date')"
+        *ngIf="!form.get('stillStudying')?.value"
+      ></app-input>
+    </div>
+
+    <label class="education__checkbox">
+      <input type="checkbox" formControlName="stillStudying" />
+      Masih menempuh pendidikan ini
+    </label>
+
+    <div class="education__form-actions">
+      <app-button variant="ghost" type="button" (click)="closeModal()">
+        {{ isReadOnly ? 'Close' : 'Cancel' }}
+      </app-button>
+      <app-button type="submit" [disabled]="isSaving" *ngIf="!isReadOnly">
+        <lucide-icon name="save" [size]="16"></lucide-icon>
+        {{ isSaving ? 'Saving...' : 'Save' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>

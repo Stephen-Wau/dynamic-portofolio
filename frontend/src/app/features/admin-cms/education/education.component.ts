@@ -1,0 +1,253 @@
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
+import { Education, EducationService } from './education.service';
+import { InputComponent } from '../../../shared/ui/input/input.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { ModalComponent } from '../../../shared/ui/modal/modal.component';
+import {
+  DataTableColumn,
+  DataTableComponent,
+  DataTableQuery,
+} from '../../../shared/ui/data-table/data-table.component';
+import { ToastService } from '../../../shared/ui/toast/toast.service';
+
+// Label bulan Indonesia dipakai formatMonth(), index 0 = Januari.
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'Mei',
+  'Jun',
+  'Jul',
+  'Agu',
+  'Sep',
+  'Okt',
+  'Nov',
+  'Des',
+];
+
+// Halaman CRUD riwayat pendidikan CMS, route /admin-cms/education.
+@Component({
+  selector: 'app-education',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent,
+    ButtonComponent,
+    ModalComponent,
+    LucideAngularModule,
+    DataTableComponent,
+  ],
+  templateUrl: './education.component.html',
+  styleUrl: './education.component.scss',
+})
+export class EducationComponent implements OnInit {
+  // Template cell custom buat kolom Periode & Aksi, di-assign ke `columns` di ngOnInit
+  // (static: true karena template ini gak di dalam *ngIf/*ngFor, jadi udah tersedia sebelum ngOnInit).
+  @ViewChild('periodeTpl', { static: true }) periodeTpl!: TemplateRef<unknown>;
+  @ViewChild('aksiTpl', { static: true }) aksiTpl!: TemplateRef<unknown>;
+
+  educations: Education[] = [];
+  columns: DataTableColumn[] = [];
+  // Total baris di BE (meta.total) — dikirim ke <app-data-table [totalCount]> buat hitung pager.
+  totalCount = 0;
+  // Ukuran halaman aktual yang dipakai BE (meta.per_page) — bisa beda dari default kalau BE
+  // punya default sendiri, jadi pager di FE mesti ikut nilai ini, bukan asumsi sendiri.
+  pageSize = 10;
+  isModalOpen = false;
+  isSaving = false;
+  // null = mode create (tombol "Tambah"), terisi id = mode edit/lihat (row yang lagi dibuka).
+  editingId: number | null = null;
+  // true kalau modal dibuka dari tombol "Lihat" — form di-disable, cuma buat baca, gak bisa submit.
+  isReadOnly = false;
+  // Query search/sort terakhir dari <app-data-table>, disimpan biar loadEducations() abis
+  // create/update/delete tetap pakai filter/sort yang lagi aktif (bukan reset ke default).
+  private currentQuery: DataTableQuery = {};
+
+  form: ReturnType<FormBuilder['group']>;
+
+  constructor(
+    private fb: FormBuilder,
+    private educationService: EducationService,
+    private toast: ToastService,
+  ) {
+    this.form = this.fb.group({
+      place: ['', Validators.required],
+      major: ['', Validators.required],
+      start_date: ['', Validators.required],
+      end_date: ['', Validators.required],
+      // Checkbox "Masih menempuh pendidikan ini" — kalau true, end_date di-null-kan saat submit,
+      // field-nya disembunyikan di template, dan Validators.required-nya dilepas (lihat di bawah).
+      stillStudying: [false],
+    });
+
+    // end_date cuma wajib diisi kalau "Masih menempuh pendidikan ini" TIDAK dicentang.
+    this.form.get('stillStudying')!.valueChanges.subscribe((stillStudying) => {
+      const endDate = this.form.get('end_date')!;
+      if (stillStudying) {
+        endDate.clearValidators();
+        endDate.setValue('');
+      } else {
+        endDate.setValidators(Validators.required);
+      }
+      endDate.updateValueAndValidity();
+    });
+  }
+
+  // Load daftar riwayat pendidikan begitu halaman dibuka + susun kolom tabel (pakai template cell custom).
+  ngOnInit(): void {
+    this.columns = [
+      { name: 'Place', prop: 'place' },
+      { name: 'Major', prop: 'major' },
+      // prop: 'start_date' dipasang biar sort jalan (ngx-datatable sort berdasarkan prop, bukan
+      // hasil render cellTemplate), meskipun yang ditampilin tetap format "Periode" custom.
+      { name: 'Period', prop: 'start_date', cellTemplate: this.periodeTpl },
+      { name: 'Action', sortable: false, cellTemplate: this.aksiTpl },
+    ];
+    this.loadEducations();
+  }
+
+  // Ambil ulang daftar riwayat pendidikan dari BE (pakai currentQuery), dipanggil saat init dan
+  // tiap habis create/update/delete.
+  loadEducations(): void {
+    this.educationService.list(this.currentQuery).subscribe({
+      next: ({ data, meta }) => {
+        this.educations = data;
+        this.totalCount = meta.total;
+        this.pageSize = meta.per_page;
+      },
+      error: () => this.toast.error('Gagal memuat riwayat pendidikan.'),
+    });
+  }
+
+  // Dipanggil dari (search) <app-data-table> tiap search box atau sort header berubah
+  // (serverSide=true) — simpan query barunya, lalu fetch ulang dari BE.
+  onTableQueryChange(query: DataTableQuery): void {
+    this.currentQuery = query;
+    this.loadEducations();
+  }
+
+  // Format "YYYY-MM" jadi "Agu 2025", atau "Sekarang" kalau null (masih menempuh pendidikan itu).
+  formatPeriod(education: Education): string {
+    const start = this.formatMonth(education.start_date);
+    const end = education.end_date ? this.formatMonth(education.end_date) : 'Sekarang';
+    return `${start} – ${end}`;
+  }
+
+  private formatMonth(yyyymm: string): string {
+    const [year, month] = yyyymm.split('-').map(Number);
+    return `${MONTH_LABELS[month - 1]} ${year}`;
+  }
+
+  // Dipakai template buat nampilin pesan validation di bawah field.
+  fieldError(name: string): string {
+    const control = this.form.get(name);
+    if (!control?.touched || !control.invalid) return '';
+    return 'Wajib diisi.';
+  }
+
+  // Buka modal kosong buat nambah riwayat pendidikan baru.
+  openCreateModal(): void {
+    this.editingId = null;
+    this.isReadOnly = false;
+    this.form.enable();
+    this.form.reset({ place: '', major: '', start_date: '', end_date: '', stillStudying: false });
+    this.isModalOpen = true;
+  }
+
+  // Buka modal terisi data existing buat diedit.
+  openEditModal(education: Education): void {
+    this.editingId = education.id;
+    this.isReadOnly = false;
+    this.form.enable();
+    this.populateForm(education);
+    this.isModalOpen = true;
+  }
+
+  // Buka modal terisi data existing tapi read-only, cuma buat lihat detail (gak bisa diubah/submit).
+  openShowModal(education: Education): void {
+    this.editingId = education.id;
+    this.isReadOnly = true;
+    this.form.enable();
+    this.populateForm(education);
+    this.form.disable();
+    this.isModalOpen = true;
+  }
+
+  private populateForm(education: Education): void {
+    this.form.reset({
+      place: education.place,
+      major: education.major,
+      start_date: education.start_date,
+      end_date: education.end_date ?? '',
+      stillStudying: education.end_date === null,
+    });
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+  }
+
+  // Submit create/update. Mode ditentukan dari editingId (null = create, terisi = update).
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const raw = this.form.getRawValue();
+    const payload = {
+      place: raw.place!,
+      major: raw.major!,
+      start_date: raw.start_date!,
+      // stillStudying dicentang → paksa end_date null, abaikan apa pun yang keisi di field-nya.
+      end_date: raw.stillStudying ? null : raw.end_date || null,
+    };
+
+    // Perbandingan string valid buat format "YYYY-MM" (zero-padded) — samain sama pengecekan di BE.
+    if (payload.end_date && payload.start_date > payload.end_date) {
+      this.toast.error('Tanggal selesai tidak boleh sebelum tanggal mulai.');
+      return;
+    }
+
+    this.isSaving = true;
+    const request = this.editingId
+      ? this.educationService.update(this.editingId, payload)
+      : this.educationService.create(payload);
+
+    request.subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.toast.success('Riwayat pendidikan berhasil disimpan.');
+        this.closeModal();
+        this.loadEducations();
+      },
+      error: (err) => {
+        this.isSaving = false;
+        const message =
+          typeof err?.error === 'string' && err.error
+            ? err.error
+            : 'Gagal menyimpan riwayat pendidikan.';
+        this.toast.error(message);
+      },
+    });
+  }
+
+  // Hapus riwayat pendidikan setelah konfirmasi native browser (window.confirm — cukup buat aksi
+  // destruktif sederhana ini, gak perlu component confirm dialog terpisah).
+  remove(education: Education): void {
+    if (!window.confirm(`Hapus riwayat pendidikan di "${education.place}"?`)) return;
+
+    this.educationService.delete(education.id).subscribe({
+      next: () => {
+        this.toast.success('Riwayat pendidikan dihapus.');
+        this.loadEducations();
+      },
+      error: () => this.toast.error('Gagal menghapus riwayat pendidikan.'),
+    });
+  }
+}
