@@ -8,6 +8,7 @@ import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ImageUploadComponent } from '../../../shared/ui/image-upload/image-upload.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { fieldError } from '../../../shared/utils/form-error.util';
 
 // Halaman edit profil CMS, route /admin-cms/profile. Icon (Save) didaftarkan di main.ts.
 @Component({
@@ -48,10 +49,9 @@ export class ProfileComponent implements OnInit {
 
   // Dipakai template buat nampilin pesan validation di bawah masing-masing field.
   fieldError(name: string): string {
-    const control = this.form.get(name);
-    if (!control?.touched || !control.invalid) return '';
-    if (control.errors?.['email']) return 'Format email tidak valid.';
-    return 'Wajib diisi.';
+    return fieldError(this.form, name, (control) =>
+      control.errors?.['email'] ? 'Format email tidak valid.' : undefined,
+    );
   }
 
   // Load profil user saat halaman dibuka, isi form (kosong kalau belum pernah diisi).

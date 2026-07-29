@@ -13,6 +13,7 @@ import {
 } from '../../../shared/ui/data-table/data-table.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
+import { fieldError } from '../../../shared/utils/form-error.util';
 
 // Halaman CRUD riwayat kerja CMS, route /admin-cms/work-histories.
 @Component({
@@ -127,9 +128,7 @@ export class WorkHistoriesComponent implements OnInit {
 
   // Dipakai template buat nampilin pesan validation di bawah field top-level (bukan poin).
   fieldError(name: string): string {
-    const control = this.form.get(name);
-    if (!control?.touched || !control.invalid) return '';
-    return 'Wajib diisi.';
+    return fieldError(this.form, name);
   }
 
   // Sama seperti fieldError, tapi buat tiap baris di FormArray poin.

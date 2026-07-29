@@ -7,6 +7,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { fieldError } from '../../../shared/utils/form-error.util';
 
 // Halaman login CMS, route /admin-cms/login. Icon (LogIn) didaftarkan di main.ts.
 @Component({
@@ -35,9 +36,7 @@ export class LoginComponent {
 
   // Dipakai template buat nampilin pesan validation di bawah masing-masing field.
   fieldError(name: string): string {
-    const control = this.form.get(name);
-    if (!control?.touched || !control.invalid) return '';
-    return `${name === 'username' ? 'Username' : 'Password'} wajib diisi.`;
+    return fieldError(this.form, name, () => `${name === 'username' ? 'Username' : 'Password'} wajib diisi.`);
   }
 
   // Submit form login, redirect ke dashboard CMS kalau sukses.

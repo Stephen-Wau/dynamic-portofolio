@@ -13,6 +13,7 @@ import {
 } from '../../../shared/ui/data-table/data-table.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
+import { fieldError } from '../../../shared/utils/form-error.util';
 
 // Halaman CRUD riwayat pendidikan CMS, route /admin-cms/education.
 @Component({
@@ -123,9 +124,7 @@ export class EducationComponent implements OnInit {
 
   // Dipakai template buat nampilin pesan validation di bawah field.
   fieldError(name: string): string {
-    const control = this.form.get(name);
-    if (!control?.touched || !control.invalid) return '';
-    return 'Wajib diisi.';
+    return fieldError(this.form, name);
   }
 
   // Buka modal kosong buat nambah riwayat pendidikan baru.
