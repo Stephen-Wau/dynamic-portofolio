@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { Education, EducationService } from './education.service';
 import { InputComponent } from '../../../shared/ui/input/input.component';
+import { MonthPickerComponent } from '../../../shared/ui/month-picker/month-picker.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ModalComponent } from '../../../shared/ui/modal/modal.component';
 import {
@@ -26,6 +27,7 @@ import { loadPagedList } from '../../../shared/utils/load-paged-list.util';
     CommonModule,
     ReactiveFormsModule,
     InputComponent,
+    MonthPickerComponent,
     ButtonComponent,
     ModalComponent,
     LucideAngularModule,

@@ -51,19 +51,17 @@
     ></app-input>
 
     <div class="work-histories__date-row">
-      <app-input
+      <app-month-picker
         label="Mulai *"
-        type="month"
         formControlName="start_date"
         [errorMessage]="fieldError('start_date')"
-      ></app-input>
-      <app-input
+      ></app-month-picker>
+      <app-month-picker
         label="Selesai *"
-        type="month"
         formControlName="end_date"
         [errorMessage]="fieldError('end_date')"
         *ngIf="!form.get('stillWorking')?.value"
-      ></app-input>
+      ></app-month-picker>
     </div>
 
     <label class="work-histories__checkbox">
