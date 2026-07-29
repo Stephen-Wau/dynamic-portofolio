@@ -70,6 +70,12 @@ func main() {
 	mux.HandleFunc("/api/work-histories/{id}", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.WorkHistoryHandler(conn))))
 
+	mux.HandleFunc("/api/educations", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.EducationsHandler(conn))))
+
+	mux.HandleFunc("/api/educations/{id}", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.EducationHandler(conn))))
+
 	addr := "localhost:8080"
 	log.Printf("server listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
