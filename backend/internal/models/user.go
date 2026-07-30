@@ -21,3 +21,42 @@ func GetUserByUsername(db *sql.DB, username string) (*User, error) {
 	}
 	return &u, nil
 }
+
+// UserSummary ringkasan user + profil buat ditampilin sebagai card di menu Settings (pilih user
+// mana yang mau ditampilkan di landing page publik) — bukan struct lengkap User/UserProfile
+// karena cuma butuh info identitas visual, gak perlu password_hash/email/dll.
+type UserSummary struct {
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	FullName string `json:"full_name"`
+	Image    string `json:"image"`
+}
+
+// ListAllUsers ambil semua user beserta full_name & foto profilnya (LEFT JOIN, karena profil
+// bisa aja belum pernah diisi), diurutkan by username.
+func ListAllUsers(db *sql.DB) ([]UserSummary, error) {
+	rows, err := db.Query(`
+		SELECT u.id, u.username, p.full_name, p.image
+		FROM users u
+		LEFT JOIN user_profiles p ON p.user_id = u.id
+		ORDER BY u.username ASC`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := []UserSummary{}
+	for rows.Next() {
+		var (
+			u                  UserSummary
+			fullName, imageURL sql.NullString
+		)
+		if err := rows.Scan(&u.ID, &u.Username, &fullName, &imageURL); err != nil {
+			return nil, err
+		}
+		u.FullName = fullName.String
+		u.Image = imageURL.String
+		users = append(users, u)
+	}
+	return users, rows.Err()
+}
