@@ -48,6 +48,11 @@ export const routes: Routes = [
             (m) => m.EducationComponent,
           ),
       },
+      {
+        path: 'skills',
+        loadComponent: () =>
+          import('./features/admin-cms/skills/skill.component').then((m) => m.SkillComponent),
+      },
     ],
   },
 ];

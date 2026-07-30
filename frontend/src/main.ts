@@ -18,6 +18,7 @@ import {
   X,
   Eye,
   GraduationCap,
+  Star,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -43,6 +44,7 @@ bootstrapApplication(AppComponent, {
         X,
         Eye,
         GraduationCap,
+        Star,
       }),
     ),
   ],

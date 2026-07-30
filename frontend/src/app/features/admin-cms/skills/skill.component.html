@@ -1,0 +1,104 @@
+<div class="skills__header">
+  <h1>Skill</h1>
+  <app-button (click)="openCreateModal()">
+    <lucide-icon name="plus" [size]="16"></lucide-icon>
+    Add
+  </app-button>
+</div>
+
+<ng-template #typeTpl let-value="value">
+  {{ skillTypeLabel(value) }}
+</ng-template>
+
+<ng-template #aksiTpl let-row="row">
+  <div class="skills__actions">
+    <app-button variant="ghost" size="sm" (click)="openShowModal($any(row))">
+      <lucide-icon name="eye" [size]="14"></lucide-icon>
+      Show
+    </app-button>
+    <app-button variant="ghost" size="sm" (click)="openEditModal($any(row))">
+      <lucide-icon name="pencil" [size]="14"></lucide-icon>
+      Edit
+    </app-button>
+    <app-button variant="danger" size="sm" (click)="remove($any(row))">
+      <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+      Delete
+    </app-button>
+  </div>
+</ng-template>
+
+<app-data-table
+  [rows]="skills"
+  [columns]="columns"
+  [serverSide]="true"
+  [totalCount]="totalCount"
+  [pageSize]="pageSize"
+  (search)="onTableQueryChange($event)"
+  (refresh)="loadSkills()"
+  searchPlaceholder="Search title..."
+  emptyMessage="Belum ada skill. Klik &quot;Add&quot; untuk menambahkan."
+></app-data-table>
+
+<app-modal
+  [open]="isModalOpen"
+  [title]="isReadOnly ? 'Detail Skill' : (editingId ? 'Edit Skill' : 'Tambah Skill')"
+  (closed)="closeModal()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div formArrayName="rows">
+      <div
+        class="skills__row"
+        *ngFor="let row of rows.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <app-input
+          label="Nama Skill *"
+          formControlName="title"
+          [errorMessage]="fieldError(i, 'title')"
+        ></app-input>
+
+        <div class="skills__type-field">
+          <label>Tipe *</label>
+          <select formControlName="type" class="skills__type-select">
+            <option value="" disabled>Pilih tipe...</option>
+            <option value="soft_skill">Soft Skill</option>
+            <option value="hard_skill">Hard Skill</option>
+            <option value="software_skill">Software Skill</option>
+          </select>
+          <p class="skills__type-error" *ngIf="fieldError(i, 'type')">{{ fieldError(i, 'type') }}</p>
+        </div>
+
+        <button
+          type="button"
+          class="skills__row-remove"
+          (click)="removeRow(i)"
+          *ngIf="!editingId && !isReadOnly && rows.length > 1"
+        >
+          <lucide-icon name="x" [size]="16"></lucide-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Multiple baris cuma didukung pas create; edit/show cuma satu baris. -->
+    <app-button
+      variant="ghost"
+      size="sm"
+      type="button"
+      (click)="addRow()"
+      *ngIf="!editingId && !isReadOnly"
+    >
+      <lucide-icon name="plus" [size]="14"></lucide-icon>
+      Add Row
+    </app-button>
+
+    <div class="skills__form-actions">
+      <app-button variant="ghost" type="button" (click)="closeModal()">
+        {{ isReadOnly ? 'Close' : 'Cancel' }}
+      </app-button>
+      <app-button type="submit" [disabled]="isSaving" *ngIf="!isReadOnly">
+        <lucide-icon name="save" [size]="16"></lucide-icon>
+        {{ isSaving ? 'Saving...' : 'Save' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>
