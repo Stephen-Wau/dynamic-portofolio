@@ -1,0 +1,41 @@
+<div class="settings__header">
+  <h1>Settings</h1>
+</div>
+
+<section class="settings__section">
+  <h2>Featured User</h2>
+  <p class="settings__section-desc">
+    Pilih user mana yang datanya ditampilkan di landing page portofolio publik.
+  </p>
+
+  <div class="settings__loading" *ngIf="isLoading">Memuat...</div>
+
+  <div class="settings__grid" *ngIf="!isLoading">
+    <button
+      type="button"
+      class="settings__card"
+      *ngFor="let user of users"
+      [class.settings__card--active]="user.id === featuredUserId"
+      [disabled]="savingUserId !== null"
+      (click)="selectUser(user)"
+    >
+      <div class="settings__card-check" *ngIf="user.id === featuredUserId">
+        <lucide-icon name="check" [size]="14"></lucide-icon>
+      </div>
+
+      <div class="settings__avatar">
+        <img *ngIf="user.image" [src]="user.image" alt="Foto profil {{ user.full_name || user.username }}" />
+        <span *ngIf="!user.image">{{ initial(user) }}</span>
+      </div>
+
+      <p class="settings__card-name">{{ user.full_name || user.username }}</p>
+      <p class="settings__card-username">{{ '@' + user.username }}</p>
+
+      <span class="settings__card-status">
+        {{ user.id === featuredUserId ? 'Ditampilkan' : (savingUserId === user.id ? 'Menyimpan...' : 'Pilih') }}
+      </span>
+    </button>
+
+    <p class="settings__empty" *ngIf="users.length === 0">Belum ada user.</p>
+  </div>
+</section>

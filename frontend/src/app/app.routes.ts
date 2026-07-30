@@ -53,6 +53,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin-cms/skills/skill.component').then((m) => m.SkillComponent),
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/admin-cms/settings/settings.component').then(
+            (m) => m.SettingsComponent,
+          ),
+      },
     ],
   },
 ];

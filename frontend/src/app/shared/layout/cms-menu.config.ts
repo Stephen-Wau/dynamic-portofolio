@@ -1,7 +1,7 @@
 export interface CmsMenuItem {
   label: string;
   path: string;
-  icon: 'dashboard' | 'profile' | 'work-histories' | 'education' | 'skills';
+  icon: 'dashboard' | 'profile' | 'work-histories' | 'education' | 'skills' | 'settings';
 }
 
 // Daftar menu sidebar CMS, tambah item baru di sini kalau ada halaman CMS baru.
@@ -11,4 +11,5 @@ export const CMS_MENU_ITEMS: CmsMenuItem[] = [
   { label: 'Work Histories', path: '/admin-cms/work-histories', icon: 'work-histories' },
   { label: 'Education', path: '/admin-cms/education', icon: 'education' },
   { label: 'Skill', path: '/admin-cms/skills', icon: 'skills' },
+  { label: 'Settings', path: '/admin-cms/settings', icon: 'settings' },
 ];
