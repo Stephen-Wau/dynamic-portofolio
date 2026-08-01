@@ -239,6 +239,7 @@ a {
 .hero__ssh-window {
   position: relative;
   max-width: 560px;
+  min-height: 154px;
   margin-bottom: 14px;
   border-radius: 22px;
   border: 1px solid rgba(125, 211, 252, 0.12);
@@ -299,13 +300,15 @@ a {
 
 .hero__ssh-body {
   position: relative;
-  min-height: 88px;
-  padding: 14px 16px 14px;
+  height: 102px;
+  padding: 14px 16px;
   overflow: hidden;
 }
 
 .hero__ssh-line {
-  min-height: 58px;
+  position: absolute;
+  inset: 14px 16px;
+  min-height: 74px;
 }
 
 .hero__ssh-command {
@@ -322,6 +325,7 @@ a {
 .hero__ssh-prompt {
   color: #7dd3fc;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .hero__ssh-text {
@@ -330,6 +334,10 @@ a {
   border-right: 2px solid rgba(125, 211, 252, 0.9);
   padding-right: 4px;
   animation: blinkCursor 1s steps(1) infinite;
+  min-height: 1.4em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .hero__ssh-line small {
@@ -342,6 +350,7 @@ a {
 
 .hero__ssh-output {
   margin-top: 7px;
+  min-height: 2.9em;
 
   p {
     margin: 0;
@@ -1649,7 +1658,7 @@ a {
   }
 
   .hero__ssh-body {
-    min-height: 82px;
+    height: 108px;
   }
 
   .hero__ssh-command {
