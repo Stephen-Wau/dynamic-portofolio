@@ -39,3 +39,57 @@
     <p class="settings__empty" *ngIf="users.length === 0">Belum ada user.</p>
   </div>
 </section>
+
+<section class="settings__section">
+  <h2>Active Landing Page</h2>
+  <p class="settings__section-desc">
+    Pilih mode landing page yang dipakai publik. Untuk sementara baru ada pilihan Landing Page 1.
+  </p>
+
+  <div class="settings__loading" *ngIf="isLoading">Memuat...</div>
+
+  <div class="settings__landing-grid" *ngIf="!isLoading">
+    <button
+      type="button"
+      class="settings__landing-card"
+      *ngFor="let option of landingOptions"
+      [class.settings__landing-card--active]="option.id === activeLandingPage"
+      [disabled]="savingLandingPageId !== null"
+      (click)="selectLandingPage(option)"
+    >
+      <div class="settings__landing-check" *ngIf="option.id === activeLandingPage">
+        <lucide-icon name="check" [size]="14"></lucide-icon>
+      </div>
+
+      <div class="settings__landing-preview">
+        <div class="settings__landing-preview-glow"></div>
+        <div class="settings__landing-preview-window">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="settings__landing-preview-hero">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="settings__landing-body">
+        <p class="settings__landing-name">{{ option.name }}</p>
+        <p class="settings__landing-desc">{{ option.description }}</p>
+        <p class="settings__landing-preview-text">{{ option.preview }}</p>
+      </div>
+
+      <span class="settings__card-status">
+        {{
+          option.id === activeLandingPage
+            ? 'Aktif'
+            : (savingLandingPageId === option.id ? 'Menyimpan...' : 'Gunakan')
+        }}
+      </span>
+    </button>
+
+    <p class="settings__empty" *ngIf="landingOptions.length === 0">Belum ada landing page.</p>
+  </div>
+</section>

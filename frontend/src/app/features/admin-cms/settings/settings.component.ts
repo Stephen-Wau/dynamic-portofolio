@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
 import { forkJoin } from 'rxjs';
-import { SettingsService, SettingsUser } from './settings.service';
+import {
+  ActiveLandingPageResponse,
+  LandingPageOption,
+  SettingsService,
+  SettingsUser,
+} from './settings.service';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 
@@ -19,9 +24,12 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 export class SettingsComponent implements OnInit {
   users: SettingsUser[] = [];
   featuredUserId: number | null = null;
+  landingOptions: LandingPageOption[] = [];
+  activeLandingPage = '';
   isLoading = true;
   // Simpan id yang lagi diproses biar tombol itu doang yang nunjukin loading, bukan semua card.
   savingUserId: number | null = null;
+  savingLandingPageId: string | null = null;
 
   constructor(
     private settingsService: SettingsService,
@@ -37,10 +45,12 @@ export class SettingsComponent implements OnInit {
     forkJoin({
       users: this.settingsService.listUsers(),
       featured: this.settingsService.getFeaturedUser(),
+      landingPage: this.settingsService.getActiveLandingPage(),
     }).subscribe({
-      next: ({ users, featured }) => {
+      next: ({ users, featured, landingPage }) => {
         this.users = users;
         this.featuredUserId = featured.user_id;
+        this.applyLandingPageState(landingPage);
         this.isLoading = false;
       },
       error: () => {
@@ -70,5 +80,27 @@ export class SettingsComponent implements OnInit {
         this.toast.error('Gagal menyimpan pilihan user.');
       },
     });
+  }
+
+  selectLandingPage(option: LandingPageOption): void {
+    if (option.id === this.activeLandingPage || this.savingLandingPageId) return;
+
+    this.savingLandingPageId = option.id;
+    this.settingsService.setActiveLandingPage(option.id).subscribe({
+      next: (response) => {
+        this.savingLandingPageId = null;
+        this.applyLandingPageState(response);
+        this.toast.success(`${option.name} sekarang menjadi landing page aktif.`);
+      },
+      error: () => {
+        this.savingLandingPageId = null;
+        this.toast.error('Gagal menyimpan pilihan landing page.');
+      },
+    });
+  }
+
+  private applyLandingPageState(response: ActiveLandingPageResponse): void {
+    this.activeLandingPage = response.active_landing_page;
+    this.landingOptions = response.options;
   }
 }

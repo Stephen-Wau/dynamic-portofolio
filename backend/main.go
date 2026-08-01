@@ -92,6 +92,9 @@ func main() {
 	mux.HandleFunc("/api/settings/featured-user", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.SettingsFeaturedUserHandler(conn))))
 
+	mux.HandleFunc("/api/settings/active-landing-page", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.SettingsActiveLandingPageHandler(conn))))
+
 	addr := "localhost:8080"
 	log.Printf("server listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))

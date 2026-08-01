@@ -14,6 +14,18 @@ export interface FeaturedUserResponse {
   user_id: number | null;
 }
 
+export interface LandingPageOption {
+  id: string;
+  name: string;
+  description: string;
+  preview: string;
+}
+
+export interface ActiveLandingPageResponse {
+  active_landing_page: string;
+  options: LandingPageOption[];
+}
+
 // Hit API /api/settings/* — pengaturan global aplikasi (bukan per-user), ex: user mana yang
 // lagi ditampilkan di landing page publik. Auth header nempel otomatis lewat authInterceptor.
 @Injectable({ providedIn: 'root' })
@@ -35,5 +47,15 @@ export class SettingsService {
   // Set user yang dipilih.
   setFeaturedUser(userId: number): Observable<FeaturedUserResponse> {
     return this.http.put<FeaturedUserResponse>(`${this.baseUrl}/featured-user`, { user_id: userId });
+  }
+
+  getActiveLandingPage(): Observable<ActiveLandingPageResponse> {
+    return this.http.get<ActiveLandingPageResponse>(`${this.baseUrl}/active-landing-page`);
+  }
+
+  setActiveLandingPage(activeLandingPage: string): Observable<ActiveLandingPageResponse> {
+    return this.http.put<ActiveLandingPageResponse>(`${this.baseUrl}/active-landing-page`, {
+      active_landing_page: activeLandingPage,
+    });
   }
 }
