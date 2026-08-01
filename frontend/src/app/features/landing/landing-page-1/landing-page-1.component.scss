@@ -1133,6 +1133,57 @@ a {
   }
 }
 
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0) scale(0.985);
+  filter: blur(10px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll--left {
+  transform: translate3d(-34px, 28px, 0) scale(0.985);
+}
+
+.reveal-on-scroll--right {
+  transform: translate3d(34px, 28px, 0) scale(0.985);
+}
+
+.reveal-on-scroll--nav {
+  transform: translate3d(0, -18px, 0) scale(0.995);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+.section.is-visible .skills-grid .skill-group-card.reveal-on-scroll {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+.skills-grid .skill-group-card.reveal-on-scroll {
+  transition-delay: 0ms;
+}
+
+.section.is-visible .skills-grid .skill-group-card.reveal-on-scroll:nth-child(1) {
+  transition-delay: 70ms;
+}
+
+.section.is-visible .skills-grid .skill-group-card.reveal-on-scroll:nth-child(2) {
+  transition-delay: 150ms;
+}
+
+.section.is-visible .skills-grid .skill-group-card.reveal-on-scroll:nth-child(3) {
+  transition-delay: 230ms;
+}
+
 @keyframes floatGlow {
   0%,
   100% {
@@ -1290,6 +1341,13 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
   .page-shell__glow,
   .page-shell__noise,
   .page-shell__code-rain,

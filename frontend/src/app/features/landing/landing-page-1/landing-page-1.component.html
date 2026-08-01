@@ -13,7 +13,7 @@
   <div class="page-shell__glow page-shell__glow--center"></div>
   <div class="page-shell__glow page-shell__glow--right"></div>
 
-  <nav class="nav">
+  <nav class="nav reveal-on-scroll reveal-on-scroll--nav is-visible">
     <a class="nav__brand" href="#home">
       <span class="nav__mark">{{ initial() }}</span>
       <span class="nav__name">{{ displayName() }}</span>
@@ -30,7 +30,7 @@
 
   <main class="page-content">
     <section id="home" class="hero">
-      <div class="hero__copy">
+      <div class="hero__copy reveal-on-scroll reveal-on-scroll--left is-visible">
         <div class="hero__code-orbit" aria-hidden="true">
           <span>&lt;dev/&gt;</span>
           <span>const craft = 'clean';</span>
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <aside class="hero__card">
+      <aside class="hero__card reveal-on-scroll reveal-on-scroll--right is-visible">
         <div class="hero-card__halo" aria-hidden="true"></div>
         <div class="hero-card__top">
           <div class="hero-card__avatar" [class.hero-card__avatar--image]="portfolio.profile?.image">
@@ -129,7 +129,7 @@
       </aside>
     </section>
 
-    <section class="section intro" *ngIf="hasAnyPortfolioSection()">
+    <section class="section intro reveal-on-scroll" *ngIf="hasAnyPortfolioSection()">
       <div class="section-panel">
         <p class="section-panel__eyebrow">Portfolio Snapshot</p>
         <h2>Landing page ini dirakit langsung dari data CMS yang sedang aktif.</h2>
@@ -140,18 +140,18 @@
       </div>
     </section>
 
-    <section id="about" class="section" *ngIf="portfolio.profile?.about_me">
+    <section id="about" class="section reveal-on-scroll" *ngIf="portfolio.profile?.about_me">
       <div class="section-heading">
         <p>About</p>
         <h2>Cerita singkat yang memberi konteks, bukan sekadar biodata.</h2>
       </div>
 
       <div class="about-grid">
-        <article class="about-card about-card--story">
+        <article class="about-card about-card--story reveal-on-scroll reveal-on-scroll--left">
           <div class="rich-text" [innerHTML]="normalizedAboutMe()"></div>
         </article>
 
-        <article class="about-card about-card--details">
+        <article class="about-card about-card--details reveal-on-scroll reveal-on-scroll--right">
           <h3>Quick Facts</h3>
           <div class="detail-list">
             <div class="detail-item" *ngIf="portfolio.profile?.city">
@@ -175,14 +175,14 @@
       </div>
     </section>
 
-    <section id="skills" class="section" *ngIf="skillGroups().length > 0">
+    <section id="skills" class="section reveal-on-scroll" *ngIf="skillGroups().length > 0">
       <div class="section-heading">
         <p>Skills</p>
         <h2>Kombinasi kemampuan inti, tools, dan kekuatan kolaboratif.</h2>
       </div>
 
       <div class="skills-grid">
-        <article class="skill-group-card" *ngFor="let group of skillGroups()">
+        <article class="skill-group-card reveal-on-scroll" *ngFor="let group of skillGroups()">
           <header>
             <h3>{{ group.label }}</h3>
             <span>{{ group.skills.length }} item</span>
@@ -195,14 +195,14 @@
       </div>
     </section>
 
-    <section id="experience" class="section" *ngIf="portfolio.work_histories.length > 0">
+    <section id="experience" class="section reveal-on-scroll" *ngIf="portfolio.work_histories.length > 0">
       <div class="section-heading">
         <p>Experience</p>
         <h2>Riwayat kerja yang menonjolkan kontribusi dan arah perjalanan karier.</h2>
       </div>
 
       <div class="timeline-list">
-        <article class="timeline-card" *ngFor="let job of portfolio.work_histories">
+        <article class="timeline-card reveal-on-scroll reveal-on-scroll--left" *ngFor="let job of portfolio.work_histories">
           <div class="timeline-card__line"></div>
           <div class="timeline-card__content">
             <div class="timeline-card__header">
@@ -221,14 +221,14 @@
       </div>
     </section>
 
-    <section id="education" class="section" *ngIf="portfolio.educations.length > 0">
+    <section id="education" class="section reveal-on-scroll" *ngIf="portfolio.educations.length > 0">
       <div class="section-heading">
         <p>Education</p>
         <h2>Fondasi belajar yang membentuk cara berpikir dan spesialisasi.</h2>
       </div>
 
       <div class="education-grid">
-        <article class="education-card" *ngFor="let edu of portfolio.educations">
+        <article class="education-card reveal-on-scroll" *ngFor="let edu of portfolio.educations">
           <div class="education-card__icon">
             <lucide-icon name="graduation-cap" [size]="18"></lucide-icon>
           </div>
@@ -242,7 +242,7 @@
       </div>
     </section>
 
-    <section id="contact" class="section">
+    <section id="contact" class="section reveal-on-scroll">
       <div class="contact-panel">
         <div class="section-heading section-heading--light">
           <p>Contact</p>

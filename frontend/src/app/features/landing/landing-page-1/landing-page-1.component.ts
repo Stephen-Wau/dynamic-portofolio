@@ -1,5 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  PLATFORM_ID,
+} from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { PublicPortfolio, PublicSkill } from '../public-portfolio.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
@@ -37,10 +46,29 @@ interface ContactAction {
   templateUrl: './landing-page-1.component.html',
   styleUrl: './landing-page-1.component.scss',
 })
-export class LandingPage1Component {
+export class LandingPage1Component implements AfterViewInit, OnDestroy {
   @Input({ required: true }) portfolio!: PublicPortfolio;
 
   currentYear = new Date().getFullYear();
+  private observer: IntersectionObserver | null = null;
+
+  constructor(
+    private host: ElementRef<HTMLElement>,
+    private ngZone: NgZone,
+    @Inject(PLATFORM_ID) private platformId: object,
+  ) {}
+
+  ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.setupScrollReveal();
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
 
   formatPeriod(startDate: string, endDate: string | null): string {
     return formatPeriod(startDate, endDate);
@@ -172,5 +200,34 @@ export class LandingPage1Component {
 
   private cleanLabel(value: string): string {
     return value.replace(/^https?:\/\//i, '').replace(/\/$/, '');
+  }
+
+  private setupScrollReveal(): void {
+    this.observer?.disconnect();
+
+    const revealItems = this.host.nativeElement.querySelectorAll<HTMLElement>('.reveal-on-scroll');
+    if (!revealItems.length) {
+      return;
+    }
+
+    this.ngZone.runOutsideAngular(() => {
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            } else {
+              entry.target.classList.remove('is-visible');
+            }
+          }
+        },
+        {
+          rootMargin: '-6% 0px -6% 0px',
+          threshold: 0.14,
+        },
+      );
+
+      revealItems.forEach((item) => this.observer?.observe(item));
+    });
   }
 }

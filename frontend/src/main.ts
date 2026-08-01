@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { importProvidersFrom } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import {
   LucideAngularModule,
   LayoutDashboard,
@@ -33,7 +33,7 @@ import { authInterceptor } from './app/core/auth/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withViewTransitions()),
     provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom(
       LucideAngularModule.pick({
