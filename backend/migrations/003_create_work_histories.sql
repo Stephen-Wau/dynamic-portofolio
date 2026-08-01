@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS work_histories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     company_name VARCHAR(191) NULL,
+    position VARCHAR(191) NULL,
     start_date DATE NULL,
     end_date DATE NULL,
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,

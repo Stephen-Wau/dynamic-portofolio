@@ -14,6 +14,7 @@ import (
 // pernah interpolate sort_by mentah-mentah ke SQL (SQL injection).
 var workHistorySortColumns = map[string]string{
 	"company_name": "company_name",
+	"position":     "position",
 	"start_date":   "start_date",
 }
 
@@ -22,6 +23,7 @@ type WorkHistory struct {
 	ID          int64    `json:"id"`
 	UserID      int64    `json:"user_id"`
 	CompanyName string   `json:"company_name"`
+	Position    string   `json:"position"`
 	StartDate   string   `json:"start_date"` // format "YYYY-MM"
 	EndDate     *string  `json:"end_date"`   // nil = masih berlangsung
 	Points      []string `json:"points"`
@@ -45,7 +47,7 @@ func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) 
 	}
 
 	sortCol := params.SortColumn(workHistorySortColumns, "start_date")
-	query := "SELECT id, user_id, company_name, start_date, end_date FROM work_histories" + whereClause +
+	query := "SELECT id, user_id, company_name, position, start_date, end_date FROM work_histories" + whereClause +
 		fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, params.SortDirSQL())
 	args = append(args, params.PerPage, params.Offset())
 
@@ -60,13 +62,14 @@ func ListWorkHistoriesByUser(db *sql.DB, userID int64, params listquery.Params) 
 	for rows.Next() {
 		var (
 			wh                 WorkHistory
-			companyName        sql.NullString
+			companyName, position sql.NullString
 			startDate, endDate sql.NullString
 		)
-		if err := rows.Scan(&wh.ID, &wh.UserID, &companyName, &startDate, &endDate); err != nil {
+		if err := rows.Scan(&wh.ID, &wh.UserID, &companyName, &position, &startDate, &endDate); err != nil {
 			return nil, 0, err
 		}
 		wh.CompanyName = companyName.String
+		wh.Position = position.String
 		wh.StartDate = toMonth(startDate.String)
 		if endDate.Valid && endDate.String != "" {
 			m := toMonth(endDate.String)
@@ -139,8 +142,8 @@ func CreateWorkHistory(db *sql.DB, wh WorkHistory) (int64, error) {
 	defer tx.Rollback()
 
 	res, err := tx.Exec(
-		"INSERT INTO work_histories (user_id, company_name, start_date, end_date) VALUES (?, ?, ?, ?)",
-		wh.UserID, wh.CompanyName, toDate(wh.StartDate), endDateValue(wh.EndDate),
+		"INSERT INTO work_histories (user_id, company_name, position, start_date, end_date) VALUES (?, ?, ?, ?, ?)",
+		wh.UserID, wh.CompanyName, nullIfEmpty(wh.Position), toDate(wh.StartDate), endDateValue(wh.EndDate),
 	)
 	if err != nil {
 		return 0, err
@@ -169,8 +172,8 @@ func UpdateWorkHistory(db *sql.DB, wh WorkHistory) error {
 	// WHERE id=? AND user_id=? sekaligus jadi ownership check: kalau id itu bukan milik
 	// user ini, WHERE-nya gak match apapun, jadi 0 baris keupdate (gak error, tapi juga gak ngubah apa-apa).
 	_, err = tx.Exec(
-		"UPDATE work_histories SET company_name = ?, start_date = ?, end_date = ? WHERE id = ? AND user_id = ?",
-		wh.CompanyName, toDate(wh.StartDate), endDateValue(wh.EndDate), wh.ID, wh.UserID,
+		"UPDATE work_histories SET company_name = ?, position = ?, start_date = ?, end_date = ? WHERE id = ? AND user_id = ?",
+		wh.CompanyName, nullIfEmpty(wh.Position), toDate(wh.StartDate), endDateValue(wh.EndDate), wh.ID, wh.UserID,
 	)
 	if err != nil {
 		return err

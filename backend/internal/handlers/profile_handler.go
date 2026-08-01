@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"dynamic-portofolio/backend/internal/auth"
 	"dynamic-portofolio/backend/internal/models"
@@ -11,6 +12,7 @@ import (
 
 type profileRequest struct {
 	FullName string `json:"full_name"`
+	Position string `json:"position"`
 	Email    string `json:"email"`
 	WaNumber string `json:"wa_number"`
 	Linkedin string `json:"linkedin"`
@@ -62,10 +64,15 @@ func saveProfile(w http.ResponseWriter, r *http.Request, db *sql.DB, userID int6
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
+	if strings.TrimSpace(req.Position) == "" {
+		http.Error(w, "Posisi wajib diisi.", http.StatusBadRequest)
+		return
+	}
 
 	profile := models.UserProfile{
 		UserID:   userID,
 		FullName: req.FullName,
+		Position: req.Position,
 		Email:    req.Email,
 		WaNumber: req.WaNumber,
 		Linkedin: req.Linkedin,

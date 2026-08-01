@@ -8,6 +8,7 @@ type UserProfile struct {
 	ID       int64  `json:"id"`
 	UserID   int64  `json:"user_id"`
 	FullName string `json:"full_name"`
+	Position string `json:"position"`
 	Email    string `json:"email"`
 	WaNumber string `json:"wa_number"`
 	Linkedin string `json:"linkedin"`
@@ -20,19 +21,20 @@ type UserProfile struct {
 // GetProfileByUserID ambil profil milik user. Return sql.ErrNoRows kalau belum pernah diisi.
 func GetProfileByUserID(db *sql.DB, userID int64) (*UserProfile, error) {
 	row := db.QueryRow(
-		"SELECT id, user_id, full_name, email, wa_number, linkedin, github, city, about_me, image FROM user_profiles WHERE user_id = ?",
+		"SELECT id, user_id, full_name, position, email, wa_number, linkedin, github, city, about_me, image FROM user_profiles WHERE user_id = ?",
 		userID,
 	)
 
 	var (
 		p                                                                 UserProfile
-		fullName, email, waNumber, linkedin, github, city, aboutMe, image sql.NullString
+		fullName, position, email, waNumber, linkedin, github, city, aboutMe, image sql.NullString
 	)
-	if err := row.Scan(&p.ID, &p.UserID, &fullName, &email, &waNumber, &linkedin, &github, &city, &aboutMe, &image); err != nil {
+	if err := row.Scan(&p.ID, &p.UserID, &fullName, &position, &email, &waNumber, &linkedin, &github, &city, &aboutMe, &image); err != nil {
 		return nil, err
 	}
 
 	p.FullName = fullName.String
+	p.Position = position.String
 	p.Email = email.String
 	p.WaNumber = waNumber.String
 	p.Linkedin = linkedin.String
@@ -47,10 +49,11 @@ func GetProfileByUserID(db *sql.DB, userID int64) (*UserProfile, error) {
 // Field kosong disimpan sebagai NULL, bukan string kosong.
 func UpsertProfile(db *sql.DB, p UserProfile) error {
 	_, err := db.Exec(
-		`INSERT INTO user_profiles (user_id, full_name, email, wa_number, linkedin, github, city, about_me, image)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`INSERT INTO user_profiles (user_id, full_name, position, email, wa_number, linkedin, github, city, about_me, image)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		 ON DUPLICATE KEY UPDATE
 		   full_name = VALUES(full_name),
+		   position = VALUES(position),
 		   email = VALUES(email),
 		   wa_number = VALUES(wa_number),
 		   linkedin = VALUES(linkedin),
@@ -59,7 +62,7 @@ func UpsertProfile(db *sql.DB, p UserProfile) error {
 		   about_me = VALUES(about_me),
 		   image = VALUES(image)`,
 		p.UserID,
-		nullIfEmpty(p.FullName), nullIfEmpty(p.Email), nullIfEmpty(p.WaNumber),
+		nullIfEmpty(p.FullName), nullIfEmpty(p.Position), nullIfEmpty(p.Email), nullIfEmpty(p.WaNumber),
 		nullIfEmpty(p.Linkedin), nullIfEmpty(p.Github), nullIfEmpty(p.City), nullIfEmpty(p.AboutMe),
 		nullIfEmpty(p.Image),
 	)

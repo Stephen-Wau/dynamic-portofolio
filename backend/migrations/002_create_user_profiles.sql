@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
     full_name VARCHAR(191) NULL,
+    position VARCHAR(191) NULL,
     email VARCHAR(191) NULL,
     wa_number VARCHAR(50) NULL,
     linkedin VARCHAR(191) NULL,

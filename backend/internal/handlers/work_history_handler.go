@@ -17,6 +17,7 @@ import (
 // (user_id sengaja gak ada di sini, selalu diambil dari JWT bukan dari body).
 type workHistoryRequest struct {
 	CompanyName string   `json:"company_name"`
+	Position    string   `json:"position"`
 	StartDate   string   `json:"start_date"`
 	EndDate     *string  `json:"end_date"`
 	Points      []string `json:"points"`
@@ -99,6 +100,9 @@ func validateWorkHistoryRequest(req workHistoryRequest) string {
 	if strings.TrimSpace(req.CompanyName) == "" {
 		return "Nama kantor / tempat bekerja wajib diisi."
 	}
+	if strings.TrimSpace(req.Position) == "" {
+		return "Posisi wajib diisi."
+	}
 	if !monthPattern.MatchString(req.StartDate) {
 		return "Tanggal mulai wajib diisi."
 	}
@@ -153,6 +157,7 @@ func createWorkHistory(w http.ResponseWriter, r *http.Request, db *sql.DB, userI
 	wh := models.WorkHistory{
 		UserID:      userID,
 		CompanyName: req.CompanyName,
+		Position:    req.Position,
 		StartDate:   req.StartDate,
 		EndDate:     req.EndDate,
 		Points:      req.Points,
@@ -198,6 +203,7 @@ func updateWorkHistory(w http.ResponseWriter, r *http.Request, db *sql.DB, userI
 		ID:          id,
 		UserID:      userID,
 		CompanyName: req.CompanyName,
+		Position:    req.Position,
 		StartDate:   req.StartDate,
 		EndDate:     req.EndDate,
 		Points:      req.Points,
