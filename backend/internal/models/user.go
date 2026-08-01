@@ -22,6 +22,17 @@ func GetUserByUsername(db *sql.DB, username string) (*User, error) {
 	return &u, nil
 }
 
+// GetUserByID cari user berdasarkan id. Return sql.ErrNoRows kalau tidak ditemukan.
+func GetUserByID(db *sql.DB, id int64) (*User, error) {
+	row := db.QueryRow("SELECT id, username, password_hash FROM users WHERE id = ?", id)
+
+	var u User
+	if err := row.Scan(&u.ID, &u.Username, &u.PasswordHash); err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
 // UserSummary ringkasan user + profil buat ditampilin sebagai card di menu Settings (pilih user
 // mana yang mau ditampilkan di landing page publik) — bukan struct lengkap User/UserProfile
 // karena cuma butuh info identitas visual, gak perlu password_hash/email/dll.

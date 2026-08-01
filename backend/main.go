@@ -58,6 +58,10 @@ func main() {
 	mux.HandleFunc("/api/auth/login", withCORS(cfg.FrontendOrigin,
 		handlers.LoginHandler(conn, cfg.JWTSecret, cfg.JWTExpiryHours)))
 
+	// Endpoint publik (TANPA auth) dipakai landing page portofolio.
+	mux.HandleFunc("/api/public/portfolio", withCORS(cfg.FrontendOrigin,
+		handlers.PublicPortfolioHandler(conn)))
+
 	mux.HandleFunc("/api/auth/me", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.MeHandler)))
 
