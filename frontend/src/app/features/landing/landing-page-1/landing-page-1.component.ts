@@ -63,6 +63,12 @@ export class LandingPage1Component {
     return 'Membangun backend yang stabil, terstruktur, dan siap dikembangkan, mulai dari API, database, server setup, sampai proses migration data yang rapi.';
   }
 
+  normalizedAboutMe(): string {
+    return (this.portfolio?.profile?.about_me || '')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\u00a0/g, ' ');
+  }
+
   topSkills(limit = 4): PublicSkill[] {
     return this.portfolio?.skills.slice(0, limit) ?? [];
   }

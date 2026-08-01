@@ -807,6 +807,9 @@ a {
 .rich-text {
   color: var(--landing-text-soft);
   line-height: 1.9;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
 
   ::ng-deep p {
     margin: 0 0 14px;
