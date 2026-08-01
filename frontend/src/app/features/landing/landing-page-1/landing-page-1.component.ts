@@ -39,6 +39,30 @@ interface ContactAction {
   icon: string;
 }
 
+interface HeroCommand {
+  prompt: string;
+  command: string;
+  note: string;
+  outputs: string[];
+}
+
+const STACK_KEYWORDS = [
+  'laravel',
+  'php',
+  'golang',
+  'go',
+  'mysql',
+  'postgresql',
+  'postgres',
+  'redis',
+  'docker',
+  'nginx',
+  'linux',
+  'git',
+  'rest api',
+  'api',
+];
+
 @Component({
   selector: 'app-landing-page-1',
   standalone: true,
@@ -50,7 +74,12 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
   @Input({ required: true }) portfolio!: PublicPortfolio;
 
   currentYear = new Date().getFullYear();
+  sshPrompt = '';
+  sshCommand = '';
+  sshNote = '';
+  sshOutputs: string[] = [];
   private observer: IntersectionObserver | null = null;
+  private sshTimers: number[] = [];
 
   constructor(
     private host: ElementRef<HTMLElement>,
@@ -64,10 +93,12 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
     }
 
     this.setupScrollReveal();
+    this.startSshSequence();
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.clearSshTimers();
   }
 
   formatPeriod(startDate: string, endDate: string | null): string {
@@ -88,7 +119,120 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
   }
 
   heroSummary(): string {
-    return 'Membangun backend yang stabil, terstruktur, dan siap dikembangkan, mulai dari API, database, server setup, sampai proses migration data yang rapi.';
+    return 'Berfokus membangun backend yang stabil, aman, dan mudah dikembangkan, mencakup API, database, otomasi deployment, server setup, hingga alur migrasi data yang tertata.';
+  }
+
+  heroBadgeItems(): string[] {
+    return [this.primaryRole(), this.stackFocus(), this.operationsFocus()];
+  }
+
+  stackFocus(): string {
+    const stackMatches = this.portfolio.skills
+      .map((skill) => skill.title.trim())
+      .filter((title) =>
+        STACK_KEYWORDS.some((keyword) => title.toLowerCase().includes(keyword)),
+      )
+      .slice(0, 3);
+
+    return stackMatches.length > 0 ? stackMatches.join(', ') : 'Laravel, PHP, Golang';
+  }
+
+  operationsFocus(): string {
+    return 'API, Server Ops, DB Migration';
+  }
+
+  heroCommands(): HeroCommand[] {
+    return [
+      {
+        prompt: 'root@prod-api-01:~#',
+        command: 'sudo apt install nginx certbot -y',
+        note: 'Provisioning web server dependencies',
+        outputs: ['Reading package lists... done', 'nginx and certbot installed successfully'],
+      },
+      {
+        prompt: 'deploy@web-02:/var/www/app$',
+        command: 'nginx -t && systemctl reload nginx',
+        note: 'Validating config and reloading gracefully',
+        outputs: ['nginx: configuration file /etc/nginx/nginx.conf test is successful', 'service nginx reloaded'],
+      },
+      {
+        prompt: 'deploy@release:/srv/www/current$',
+        command: 'ln -sfn /srv/www/releases/20260801 /srv/www/current',
+        note: 'Switching symlink to latest release',
+        outputs: ['release symlink updated', 'current -> /srv/www/releases/20260801'],
+      },
+      {
+        prompt: 'ops@db-migration:~$',
+        command: 'php artisan migrate --force',
+        note: 'Applying schema changes safely',
+        outputs: ['Migrating: 2026_08_01_000001_update_profiles_table', 'Migration completed successfully'],
+      },
+    ];
+  }
+
+  private startSshSequence(): void {
+    const commands = this.heroCommands();
+    if (!commands.length) {
+      return;
+    }
+
+    let commandIndex = 0;
+
+    const runSequence = () => {
+      const item = commands[commandIndex];
+      this.sshPrompt = item.prompt;
+      this.sshCommand = '';
+      this.sshNote = '';
+      this.sshOutputs = [];
+
+      let charIndex = 0;
+      const typingTimer = window.setInterval(() => {
+        charIndex += 1;
+        this.sshCommand = item.command.slice(0, charIndex);
+
+        if (charIndex >= item.command.length) {
+          window.clearInterval(typingTimer);
+
+          const afterTypingTimer = window.setTimeout(() => {
+            this.sshNote = item.note;
+
+            item.outputs.forEach((output, outputIndex) => {
+              const outputTimer = window.setTimeout(() => {
+                this.sshOutputs = [...this.sshOutputs, output];
+              }, outputIndex * 420);
+
+              this.sshTimers.push(outputTimer);
+            });
+
+            const totalOutputDuration = item.outputs.length * 420;
+            const nextTimer = window.setTimeout(() => {
+              this.sshPrompt = '';
+              this.sshCommand = '';
+              this.sshNote = '';
+              this.sshOutputs = [];
+              commandIndex = (commandIndex + 1) % commands.length;
+              runSequence();
+            }, totalOutputDuration + 1500);
+
+            this.sshTimers.push(nextTimer);
+          }, 260);
+
+          this.sshTimers.push(afterTypingTimer);
+        }
+      }, 34);
+
+      this.sshTimers.push(typingTimer);
+    };
+
+    runSequence();
+  }
+
+  private clearSshTimers(): void {
+    this.sshTimers.forEach((timerId) => {
+      window.clearTimeout(timerId);
+      window.clearInterval(timerId);
+    });
+    this.sshTimers = [];
   }
 
   normalizedAboutMe(): string {
