@@ -4,21 +4,29 @@
   <div class="profile-form__row">
     <app-input label="Nama" formControlName="full_name" [errorMessage]="fieldError('full_name')"></app-input>
     <app-input
+      label="Posisi / Jabatan"
+      formControlName="position"
+      [errorMessage]="fieldError('position')"
+    ></app-input>
+    <app-input
       label="Email"
       type="email"
       formControlName="email"
       [errorMessage]="fieldError('email')"
     ></app-input>
+  </div>
+
+  <div class="profile-form__row">
     <app-input
       label="No. WhatsApp"
       formControlName="wa_number"
       [errorMessage]="fieldError('wa_number')"
     ></app-input>
+    <app-input label="LinkedIn" formControlName="linkedin"></app-input>
+    <app-input label="GitHub" formControlName="github"></app-input>
   </div>
 
   <div class="profile-form__row">
-    <app-input label="LinkedIn" formControlName="linkedin"></app-input>
-    <app-input label="GitHub" formControlName="github"></app-input>
     <app-input label="Kota / Domisili" formControlName="city"></app-input>
   </div>
 

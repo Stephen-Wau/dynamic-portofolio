@@ -8,6 +8,7 @@ export interface WorkHistory {
   id: number;
   user_id: number;
   company_name: string;
+  position: string;
   start_date: string; // "YYYY-MM"
   end_date: string | null; // null = masih berlangsung
   points: string[];

@@ -68,6 +68,7 @@ export class WorkHistoriesComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       company_name: ['', Validators.required],
+      position: ['', Validators.required],
       start_date: ['', Validators.required],
       end_date: ['', Validators.required],
       // Checkbox "Masih bekerja di sini" — kalau true, end_date di-null-kan saat submit,
@@ -84,6 +85,7 @@ export class WorkHistoriesComponent implements OnInit {
   ngOnInit(): void {
     this.columns = [
       { name: 'Company', prop: 'company_name' },
+      { name: 'Position', prop: 'position' },
       // prop: 'start_date' dipasang biar sort jalan (ngx-datatable sort berdasarkan prop, bukan
       // hasil render cellTemplate), meskipun yang ditampilin tetap format "Periode" custom.
       { name: 'Period', prop: 'start_date', cellTemplate: this.periodeTpl },
@@ -141,7 +143,13 @@ export class WorkHistoriesComponent implements OnInit {
     this.editingId = null;
     this.isReadOnly = false;
     this.form.enable();
-    this.form.reset({ company_name: '', start_date: '', end_date: '', stillWorking: false });
+    this.form.reset({
+      company_name: '',
+      position: '',
+      start_date: '',
+      end_date: '',
+      stillWorking: false,
+    });
     this.points.clear();
     this.points.push(this.fb.control('', Validators.required));
     this.isModalOpen = true;
@@ -169,6 +177,7 @@ export class WorkHistoriesComponent implements OnInit {
   private populateForm(history: WorkHistory): void {
     this.form.reset({
       company_name: history.company_name,
+      position: history.position,
       start_date: history.start_date,
       end_date: history.end_date ?? '',
       stillWorking: history.end_date === null,
@@ -204,6 +213,7 @@ export class WorkHistoriesComponent implements OnInit {
     const raw = this.form.getRawValue();
     const payload = {
       company_name: raw.company_name!,
+      position: raw.position!,
       start_date: raw.start_date!,
       // stillWorking dicentang → paksa end_date null, abaikan apa pun yang keisi di field-nya.
       end_date: raw.stillWorking ? null : raw.end_date || null,

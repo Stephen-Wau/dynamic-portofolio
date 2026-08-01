@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 export interface Profile {
   user_id: number;
   full_name: string;
+  position: string;
   email: string;
   wa_number: string;
   linkedin: string;
