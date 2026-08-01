@@ -37,6 +37,7 @@ export interface PublicSkill {
 }
 
 export interface PublicPortfolio {
+  active_landing_page: string;
   username: string;
   profile: PublicProfile | null;
   work_histories: PublicWorkHistory[];

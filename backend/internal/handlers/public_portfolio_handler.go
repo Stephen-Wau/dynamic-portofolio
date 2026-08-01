@@ -19,6 +19,7 @@ func publicPortfolioListParams(sortBy string) listquery.Params {
 
 // publicPortfolioResponse bentuk data portofolio lengkap 1 user, dipakai landing page publik.
 type publicPortfolioResponse struct {
+	ActiveLandingPage string               `json:"active_landing_page"`
 	Username      string               `json:"username"`
 	Profile       *models.UserProfile  `json:"profile"`
 	WorkHistories []models.WorkHistory `json:"work_histories"`
@@ -87,8 +88,18 @@ func PublicPortfolioHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		activeLandingPage, err := models.GetSetting(db, "active_landing_page")
+		if err != nil {
+			http.Error(w, "failed to load landing page setting", http.StatusInternalServerError)
+			return
+		}
+		if activeLandingPage == "" {
+			activeLandingPage = "landing_page_1"
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(publicPortfolioResponse{
+			ActiveLandingPage: activeLandingPage,
 			Username:      user.Username,
 			Profile:       profile,
 			WorkHistories: workHistories,
