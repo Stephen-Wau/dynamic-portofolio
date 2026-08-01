@@ -988,6 +988,14 @@ a {
   }
 }
 
+.timeline-card__position {
+  margin: 8px 0 0;
+  color: var(--landing-accent-strong);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
 .timeline-card__points {
   margin: 20px 0 0;
   padding-left: 18px;

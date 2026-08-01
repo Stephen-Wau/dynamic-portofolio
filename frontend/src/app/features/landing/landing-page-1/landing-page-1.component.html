@@ -209,6 +209,7 @@
               <div>
                 <p class="timeline-card__label">Company</p>
                 <h3>{{ job.company_name }}</h3>
+                <p class="timeline-card__position" *ngIf="job.position">{{ job.position }}</p>
               </div>
               <span>{{ formatPeriod(job.start_date, job.end_date) }}</span>
             </div>

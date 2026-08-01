@@ -18,6 +18,7 @@ export interface PublicProfile {
 export interface PublicWorkHistory {
   id: number;
   company_name: string;
+  position: string;
   start_date: string;
   end_date: string | null;
   points: string[];
