@@ -21,6 +21,11 @@ import {
   Star,
   Settings,
   Check,
+  Mail,
+  MessageCircle,
+  Linkedin,
+  Github,
+  MapPin,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -49,6 +54,11 @@ bootstrapApplication(AppComponent, {
         Star,
         Settings,
         Check,
+        Mail,
+        MessageCircle,
+        Linkedin,
+        Github,
+        MapPin,
       }),
     ),
   ],
