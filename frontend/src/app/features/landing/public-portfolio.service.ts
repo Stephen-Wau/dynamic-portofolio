@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 
 export interface PublicProfile {
   full_name: string;
+  position: string;
   email: string;
   wa_number: string;
   linkedin: string;

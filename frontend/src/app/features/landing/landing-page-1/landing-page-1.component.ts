@@ -56,7 +56,7 @@ export class LandingPage1Component {
   }
 
   primaryRole(): string {
-    return 'Backend Developer';
+    return this.portfolio?.profile?.position || 'Professional Portfolio';
   }
 
   heroSummary(): string {
