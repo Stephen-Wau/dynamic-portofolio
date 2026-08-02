@@ -86,6 +86,12 @@ func main() {
 	mux.HandleFunc("/api/user-skills/{id}", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.UserSkillHandler(conn))))
 
+	mux.HandleFunc("/api/technical-projects", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.TechnicalProjectsHandler(conn))))
+
+	mux.HandleFunc("/api/technical-projects/{id}", withCORS(cfg.FrontendOrigin,
+		auth.RequireAuth(cfg.JWTSecret, handlers.TechnicalProjectHandler(conn))))
+
 	mux.HandleFunc("/api/settings/users", withCORS(cfg.FrontendOrigin,
 		auth.RequireAuth(cfg.JWTSecret, handlers.SettingsUsersHandler(conn))))
 
