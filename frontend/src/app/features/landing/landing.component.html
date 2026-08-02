@@ -15,11 +15,11 @@
 </div>
 
 <app-landing-page-1
-  *ngIf="!isLoading && data && activeLandingPage() === 'landing_page_1'"
+  *ngIf="!isLoading && data && activeLandingPage() !== 'landing_page_2'"
   [portfolio]="data"
 ></app-landing-page-1>
 
-<app-landing-page-1
-  *ngIf="!isLoading && data && activeLandingPage() !== 'landing_page_1'"
+<app-landing-page-2
+  *ngIf="!isLoading && data && activeLandingPage() === 'landing_page_2'"
   [portfolio]="data"
-></app-landing-page-1>
+></app-landing-page-2>

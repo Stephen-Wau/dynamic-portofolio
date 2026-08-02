@@ -30,6 +30,12 @@ import {
   Paperclip,
   FolderKanban,
   Menu,
+  Sparkles,
+  Sparkle,
+  Rocket,
+  Code2,
+  Database,
+  Server,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -67,6 +73,12 @@ bootstrapApplication(AppComponent, {
         Paperclip,
         FolderKanban,
         Menu,
+        Sparkles,
+        Sparkle,
+        Rocket,
+        Code2,
+        Database,
+        Server,
       }),
     ),
   ],
