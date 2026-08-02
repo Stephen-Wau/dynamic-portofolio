@@ -19,12 +19,13 @@ func publicPortfolioListParams(sortBy string) listquery.Params {
 
 // publicPortfolioResponse bentuk data portofolio lengkap 1 user, dipakai landing page publik.
 type publicPortfolioResponse struct {
-	ActiveLandingPage string               `json:"active_landing_page"`
-	Username      string               `json:"username"`
-	Profile       *models.UserProfile  `json:"profile"`
-	WorkHistories []models.WorkHistory `json:"work_histories"`
-	Educations    []models.Education   `json:"educations"`
-	Skills        []models.UserSkill   `json:"skills"`
+	ActiveLandingPage string                    `json:"active_landing_page"`
+	Username          string                    `json:"username"`
+	Profile           *models.UserProfile       `json:"profile"`
+	WorkHistories     []models.WorkHistory      `json:"work_histories"`
+	Educations        []models.Education        `json:"educations"`
+	Skills            []models.UserSkill        `json:"skills"`
+	TechnicalProjects []models.TechnicalProject `json:"technical_projects"`
 }
 
 // PublicPortfolioHandler menangani GET /api/public/portfolio — endpoint TANPA auth, dipakai
@@ -88,6 +89,12 @@ func PublicPortfolioHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		technicalProjects, _, err := models.ListTechnicalProjectsByUser(db, userID, publicPortfolioListParams("name_project"))
+		if err != nil {
+			http.Error(w, "failed to load technical projects", http.StatusInternalServerError)
+			return
+		}
+
 		activeLandingPage, err := models.GetSetting(db, "active_landing_page")
 		if err != nil {
 			http.Error(w, "failed to load landing page setting", http.StatusInternalServerError)
@@ -100,11 +107,12 @@ func PublicPortfolioHandler(db *sql.DB) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(publicPortfolioResponse{
 			ActiveLandingPage: activeLandingPage,
-			Username:      user.Username,
-			Profile:       profile,
-			WorkHistories: workHistories,
-			Educations:    educations,
-			Skills:        skills,
+			Username:          user.Username,
+			Profile:           profile,
+			WorkHistories:     workHistories,
+			Educations:        educations,
+			Skills:            skills,
+			TechnicalProjects: technicalProjects,
 		})
 	}
 }
