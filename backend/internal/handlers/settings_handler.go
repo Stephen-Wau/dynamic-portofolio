@@ -14,6 +14,7 @@ import (
 const featuredUserSettingKey = "featured_user_id"
 const activeLandingPageSettingKey = "active_landing_page"
 const landingPage1 = "landing_page_1"
+const landingPage2 = "landing_page_2"
 
 // SettingsUsersHandler menangani GET /api/settings/users — daftar semua user buat card picker.
 func SettingsUsersHandler(db *sql.DB) http.HandlerFunc {
@@ -144,6 +145,12 @@ func availableLandingPageOptions() []landingPageOption {
 			Name:        "Landing Page 1",
 			Description: "Landing page editorial dengan glassmorphism, glow background, dan section portfolio lengkap.",
 			Preview:     "Mode landing pertama yang mengambil featured user dari settings.",
+		},
+		{
+			ID:          landingPage2,
+			Name:        "Landing Page 2",
+			Description: "Tema ungu-hitam gradien dengan orbit badge berputar, tilt 3D, marquee, dan animated counter.",
+			Preview:     "Mode landing kedua, lebih hidup & profesional dengan banyak efek animasi.",
 		},
 	}
 }
