@@ -4,6 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { ToastService } from '../toast/toast.service';
 import { ButtonComponent } from '../button/button.component';
+import { openFilePreview } from '../../utils/blob-url.util';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -43,32 +44,11 @@ export class FilesUploadComponent implements ControlValueAccessor {
 
   constructor(private toast: ToastService) {}
 
-  // Buka file di tab baru buat preview. Sengaja gak pakai <a href="data:...target="_blank">
-  // langsung — browser modern (Chrome dkk) block navigasi tab baru ke data: URI dari klik link
-  // (dianggap potensi phishing vector), linknya keliatan gak ngapa-ngapain pas diklik.
-  // Solusinya: convert data URI ke Blob URL (blob:...) dulu, itu gak kena blokir yang sama.
+  // Buka file di tab baru buat preview.
   preview(file: UploadedFile): void {
-    const blobUrl = this.toBlobUrl(file.file_data);
-    const opened = window.open(blobUrl, '_blank');
-    if (!opened) {
+    if (!openFilePreview(file.file_data)) {
       this.toast.error('Gagal membuka preview file (popup diblokir browser?).');
     }
-    // Kasih jeda sebelum revoke, biar tab baru sempat kelar loading konten sebelum blob-nya invalid.
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-  }
-
-  private toBlobUrl(dataUri: string): string {
-    const [header, base64] = dataUri.split(',');
-    const mimeMatch = header.match(/data:(.*);base64/);
-    const mime = mimeMatch?.[1] || 'application/octet-stream';
-
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-
-    return URL.createObjectURL(new Blob([bytes], { type: mime }));
   }
 
   // Dipanggil Angular forms saat set value dari luar (ex: patchValue pas load data existing).
