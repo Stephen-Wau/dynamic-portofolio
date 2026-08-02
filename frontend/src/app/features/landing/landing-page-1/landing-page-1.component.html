@@ -22,6 +22,7 @@
     <div class="nav__links">
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
       <a href="#experience">Experience</a>
       <a href="#education">Education</a>
       <a href="#contact">Contact</a>
@@ -206,9 +207,9 @@
               <span>Kota</span>
               <strong>{{ portfolio.profile?.city }}</strong>
             </div>
-            <div class="detail-item">
-              <span>Username</span>
-              <strong>{{ portfolio.username }}</strong>
+            <div class="detail-item" *ngIf="portfolio.technical_projects.length">
+              <span>Total best project</span>
+              <strong>{{ portfolio.technical_projects.length }} project</strong>
             </div>
             <div class="detail-item" *ngIf="portfolio.work_histories.length">
               <span>Total pengalaman</span>
@@ -239,6 +240,50 @@
           <div class="skill-tags">
             <span class="skill-tag" *ngFor="let skill of group.skills; trackBy: trackBySkillId">{{ skill.title }}</span>
           </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="section reveal-on-scroll" *ngIf="portfolio.technical_projects.length > 0">
+      <div class="section-heading">
+        <p>Projects</p>
+        <h2>Proyek teknikal yang menunjukkan kontribusi nyata dari ide sampai eksekusi.</h2>
+      </div>
+
+      <div class="projects-grid">
+        <article
+          class="project-card reveal-on-scroll"
+          *ngFor="let project of portfolio.technical_projects; trackBy: trackByProjectId"
+        >
+          <header>
+            <h3>{{ project.name_project }}</h3>
+            <span *ngIf="project.user_role">{{ project.user_role }}</span>
+          </header>
+
+          <p class="project-card__description" *ngIf="project.description">{{ project.description }}</p>
+
+          <div class="project-card__tags" *ngIf="projectTechStack(project).length > 0">
+            <span class="skill-tag" *ngFor="let tech of projectCardTechStack(project)">{{ tech }}</span>
+            <span class="skill-tag skill-tag--more" *ngIf="projectCardTechOverflowCount(project) > 0">
+              +{{ projectCardTechOverflowCount(project) }}
+            </span>
+          </div>
+
+          <!-- Klon tersembunyi dipakai buat ngukur berapa chip yang beneran muat di 2 baris
+               (lihat recomputeProjectTechOverflow) — gak pernah kelihatan (visibility: hidden). -->
+          <div
+            class="project-card__tags project-card__tags--measure"
+            [attr.data-project-id]="project.id"
+            aria-hidden="true"
+            *ngIf="projectTechStack(project).length > 0"
+          >
+            <span class="skill-tag" *ngFor="let tech of projectTechStack(project)">{{ tech }}</span>
+          </div>
+
+          <button type="button" class="button button--ghost project-card__show" (click)="openProjectModal(project)">
+            <lucide-icon name="eye" [size]="16"></lucide-icon>
+            Show
+          </button>
         </article>
       </div>
     </section>
@@ -336,4 +381,44 @@
     <p>{{ displayName() }} portfolio experience</p>
     <span>Built from CMS data - {{ currentYear }}</span>
   </footer>
+
+  <div class="project-modal-backdrop" *ngIf="selectedProject as project" (click)="closeProjectModal()">
+    <div class="project-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="project-modal__close" (click)="closeProjectModal()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+
+      <header class="project-modal__header">
+        <h3>{{ project.name_project }}</h3>
+        <span *ngIf="project.user_role">{{ project.user_role }}</span>
+      </header>
+
+      <p class="project-modal__description" *ngIf="project.description">
+        {{ project.description }}
+      </p>
+
+      <div class="project-modal__tags" *ngIf="projectTechStack(project).length > 0">
+        <span class="skill-tag" *ngFor="let tech of projectTechStack(project)">{{ tech }}</span>
+      </div>
+
+      <div class="project-modal__section" *ngIf="project.key_contributions.length > 0">
+        <h4>Key Contributions</h4>
+        <ul>
+          <li *ngFor="let contribution of project.key_contributions">{{ contribution }}</li>
+        </ul>
+      </div>
+
+      <div class="project-modal__section" *ngIf="project.files.length > 0">
+        <h4>Files</h4>
+        <ul class="project-modal__files">
+          <li *ngFor="let file of project.files">
+            <button type="button" (click)="previewProjectFile(file.file_data)">
+              <lucide-icon name="file" [size]="16"></lucide-icon>
+              {{ file.file_name }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

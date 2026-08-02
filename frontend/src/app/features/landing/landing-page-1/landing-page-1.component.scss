@@ -375,6 +375,7 @@ a {
 .skill-group-card,
 .timeline-card,
 .education-card,
+.project-card,
 .contact-panel {
   animation: fadeLift 0.9s ease both;
 }
@@ -611,6 +612,7 @@ a {
 .skill-group-card,
 .timeline-card,
 .education-card,
+.project-card,
 .contact-panel {
   border: 1px solid var(--landing-border);
   background: var(--landing-surface);
@@ -626,6 +628,7 @@ a {
 .skill-group-card::before,
 .timeline-card::before,
 .education-card::before,
+.project-card::before,
 .contact-panel::before {
   content: '';
   position: absolute;
@@ -644,6 +647,7 @@ a {
 .skill-group-card:hover::before,
 .timeline-card:hover::before,
 .education-card:hover::before,
+.project-card:hover::before,
 .contact-panel:hover::before {
   transform: translateX(120%);
   opacity: 1;
@@ -1034,7 +1038,8 @@ a {
 
 .about-card,
 .skill-group-card,
-.education-card {
+.education-card,
+.project-card {
   border-radius: var(--landing-radius-lg);
   padding: clamp(22px, 4vw, 28px);
 }
@@ -1288,6 +1293,246 @@ a {
   line-height: 1.7;
 }
 
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(125, 211, 252, 0.28);
+}
+
+.project-card header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+
+  h3 {
+    margin: 0;
+    font-family: var(--landing-font-display);
+    letter-spacing: -0.03em;
+    font-size: 1.15rem;
+  }
+
+  span {
+    color: var(--landing-accent-strong);
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+}
+
+.project-card__description {
+  margin: 0 0 16px;
+  color: var(--landing-text-soft);
+  line-height: 1.7;
+  font-size: 0.92rem;
+  // Batasi ke 3 baris biar tinggi card tetap seragam walau deskripsi panjang-panjang —
+  // isi lengkapnya tetap bisa dibaca lewat modal "Show".
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  // Fallback sesaat sebelum JS selesai ngukur (lihat recomputeProjectTechOverflow): batasi
+  // ~2 baris chip biar card gak sempat "meledak" ke banyak baris, walau hasil final udah
+  // dipas-in JS jadi harusnya gak pernah kepotong beneran.
+  max-height: 84px;
+  overflow: hidden;
+}
+
+.project-card__tags--measure {
+  // Klon pengukuran: harus tetap ikut flow (bukan display:none) biar browser ngerender & wrap
+  // chip-nya secara natural buat diukur offsetTop-nya, tapi gak boleh keliatan atau nambah
+  // tinggi card — height:0 + overflow:visible bikin isinya tetap "ada" secara layout/terukur,
+  // tapi gak makan ruang; visibility:hidden bikin gak sempat kelihatan sekilas pun.
+  height: 0;
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+  margin: 0;
+}
+
+.skill-tag--more {
+  color: var(--landing-text-faint);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--landing-border-strong);
+}
+
+.project-card__show {
+  margin-top: auto;
+  align-self: flex-start;
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  gap: 8px;
+}
+
+.project-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(4, 8, 18, 0.72);
+  backdrop-filter: blur(4px);
+  animation: backdrop-in 0.15s ease-out;
+}
+
+.project-modal {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: clamp(24px, 4vw, 34px);
+  border-radius: var(--landing-radius-lg);
+  border: 1px solid var(--landing-border);
+  background:
+    linear-gradient(180deg, rgba(17, 26, 52, 0.98), rgba(11, 18, 37, 0.97)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(125, 211, 252, 0.028) 0,
+      rgba(125, 211, 252, 0.028) 1px,
+      transparent 1px,
+      transparent 56px
+    );
+  box-shadow: var(--landing-shadow);
+  animation: modal-in 0.15s ease-out;
+}
+
+.project-modal__close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--landing-text-faint);
+  display: flex;
+
+  &:hover {
+    color: var(--landing-text);
+  }
+}
+
+.project-modal__header {
+  padding-right: 32px;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0 0 6px;
+    font-family: var(--landing-font-display);
+    letter-spacing: -0.03em;
+    font-size: 1.4rem;
+    color: var(--landing-text);
+  }
+
+  span {
+    color: var(--landing-accent-strong);
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+}
+
+.project-modal__description {
+  margin: 0 0 18px;
+  color: var(--landing-text-soft);
+  line-height: 1.8;
+}
+
+.project-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.project-modal__section {
+  margin-top: 22px;
+
+  h4 {
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.78rem;
+    color: var(--landing-text-faint);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+
+  li {
+    color: var(--landing-text-soft);
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--landing-accent);
+    }
+  }
+}
+
+.project-modal__files li {
+  padding-left: 0;
+
+  &::before {
+    content: none;
+  }
+}
+
+.project-modal__files button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(125, 211, 252, 0.08);
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--landing-text);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(125, 211, 252, 0.14);
+  }
+}
+
 .contact-panel {
   padding: clamp(26px, 5vw, 38px);
   border-radius: var(--landing-radius-xl);
@@ -1538,6 +1783,28 @@ a {
   }
 }
 
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @keyframes noiseShift {
   0% {
     transform: translate3d(0, 0, 0);
@@ -1606,6 +1873,7 @@ a {
   .skill-group-card,
   .timeline-card,
   .education-card,
+  .project-card,
   .contact-panel {
     animation: none !important;
   }
@@ -1625,6 +1893,7 @@ a {
   .skill-tag,
   .timeline-card,
   .education-card,
+  .project-card,
   .contact-action {
     transition: none !important;
   }
@@ -1638,6 +1907,7 @@ a {
 
   .skills-grid,
   .education-grid,
+  .projects-grid,
   .contact-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1675,6 +1945,7 @@ a {
   .skill-group-card,
   .timeline-card,
   .education-card,
+  .project-card,
   .contact-panel {
     border-radius: 22px;
   }
@@ -1683,6 +1954,7 @@ a {
   .hero-card__rack-grid,
   .skills-grid,
   .education-grid,
+  .projects-grid,
   .contact-actions {
     grid-template-columns: 1fr;
   }

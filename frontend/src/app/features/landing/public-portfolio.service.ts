@@ -38,6 +38,22 @@ export interface PublicSkill {
   type: 'soft_skill' | 'hard_skill' | 'software_skill';
 }
 
+export interface PublicTechnicalProjectFile {
+  id: number;
+  file_name: string;
+  file_data: string; // base64 data URI
+}
+
+export interface PublicTechnicalProject {
+  id: number;
+  name_project: string;
+  user_role: string;
+  description: string;
+  tech_stack: string;
+  key_contributions: string[];
+  files: PublicTechnicalProjectFile[];
+}
+
 export interface PublicPortfolio {
   active_landing_page: string;
   username: string;
@@ -45,6 +61,7 @@ export interface PublicPortfolio {
   work_histories: PublicWorkHistory[];
   educations: PublicEducation[];
   skills: PublicSkill[];
+  technical_projects: PublicTechnicalProject[];
 }
 
 // Hit API publik /api/public/portfolio (TANPA auth) — dipakai landing page. Balikin data user

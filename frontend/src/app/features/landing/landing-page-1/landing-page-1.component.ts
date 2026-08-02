@@ -10,8 +10,9 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
-import { PublicPortfolio, PublicSkill } from '../public-portfolio.service';
+import { PublicPortfolio, PublicSkill, PublicTechnicalProject } from '../public-portfolio.service';
 import { formatPeriod } from '../../../shared/utils/month-format.util';
+import { openFilePreview } from '../../../shared/utils/blob-url.util';
 
 const SKILL_TYPE_LABELS: Record<string, string> = {
   hard_skill: 'Core Expertise',
@@ -79,7 +80,14 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
   sshCommand = '';
   sshNote = '';
   sshOutputs: string[] = [];
+  // Project yang lagi dibuka di modal detail (null = modal tertutup).
+  selectedProject: PublicTechnicalProject | null = null;
+  // Hasil pengukuran DOM: berapa chip tech stack yang beneran muat di 2 baris per project
+  // (keyed by project.id), plus sisanya buat chip "+N". Diisi setelah view render (lihat
+  // recomputeProjectTechOverflow) — kosong dulu = fallback nampilin semua chip apa adanya.
+  private projectTechOverflow: Record<number, { visible: string[]; hiddenCount: number }> = {};
   private observer: IntersectionObserver | null = null;
+  private techOverflowResizeObserver: ResizeObserver | null = null;
   private sshTimers: number[] = [];
 
   constructor(
@@ -95,10 +103,12 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
 
     this.setupScrollReveal();
     this.startSshSequence();
+    this.setupProjectTechOverflow();
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.techOverflowResizeObserver?.disconnect();
     this.clearSshTimers();
   }
 
@@ -255,7 +265,8 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
       this.portfolio?.profile?.about_me ||
         this.portfolio?.skills.length ||
         this.portfolio?.work_histories.length ||
-        this.portfolio?.educations.length,
+        this.portfolio?.educations.length ||
+        this.portfolio?.technical_projects.length,
     );
   }
 
@@ -281,6 +292,105 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
 
   trackBySkillId(_index: number, skill: PublicSkill): number {
     return skill.id;
+  }
+
+  trackByProjectId(_index: number, project: PublicTechnicalProject): number {
+    return project.id;
+  }
+
+  // tech_stack disimpan sebagai satu string comma-separated di BE (bukan tabel pivot kayak
+  // key_contributions/files), jadi di-split di sini biar bisa dirender per-chip kayak skill-tag.
+  projectTechStack(project: PublicTechnicalProject): string[] {
+    return project.tech_stack
+      .split(',')
+      .map((item) => item.trim())
+      .filter((item) => item !== '');
+  }
+
+  // Card di grid cuma nampilin chip tech stack yang beneran muat di 2 baris (diukur dari DOM,
+  // lihat recomputeProjectTechOverflow) — sebelum pengukuran selesai, fallback nampilin semua
+  // chip apa adanya (CSS max-height di .project-card__tags jaga-jaga biar gak sempat "meledak"
+  // ke banyak baris selama sesaat itu). Daftar lengkapnya tetap kelihatan di modal "Show".
+  projectCardTechStack(project: PublicTechnicalProject): string[] {
+    return this.projectTechOverflow[project.id]?.visible ?? this.projectTechStack(project);
+  }
+
+  projectCardTechOverflowCount(project: PublicTechnicalProject): number {
+    return this.projectTechOverflow[project.id]?.hiddenCount ?? 0;
+  }
+
+  // Ukur DOM buat nentuin berapa chip tech stack yang beneran muat di 2 baris per project card
+  // (lebar card beda-beda tergantung breakpoint, dan panjang nama tech juga beda-beda — gak bisa
+  // ditentuin dari angka tetap kayak "maks 5 chip"). Dijalanin sekali di ngAfterViewInit (di-defer
+  // lewat setTimeout biar gak nulis ke binding di siklus CD yang sama, kalau enggak Angular bakal
+  // nge-throw ExpressionChangedAfterItHasBeenCheckedError), lalu diulang tiap kali lebar berubah.
+  private setupProjectTechOverflow(): void {
+    if (!this.portfolio?.technical_projects?.length) {
+      return;
+    }
+
+    setTimeout(() => this.recomputeProjectTechOverflow());
+
+    this.ngZone.runOutsideAngular(() => {
+      this.techOverflowResizeObserver = new ResizeObserver(() => {
+        this.ngZone.run(() => this.recomputeProjectTechOverflow());
+      });
+      this.techOverflowResizeObserver.observe(this.host.nativeElement);
+    });
+  }
+
+  private recomputeProjectTechOverflow(): void {
+    const measureRows = this.host.nativeElement.querySelectorAll<HTMLElement>(
+      '.project-card__tags--measure',
+    );
+    const nextState: Record<number, { visible: string[]; hiddenCount: number }> = {};
+
+    measureRows.forEach((row) => {
+      const projectId = Number(row.dataset['projectId']);
+      const project = this.portfolio.technical_projects.find((p) => p.id === projectId);
+      const chips = Array.from(row.children) as HTMLElement[];
+      if (!project || !chips.length) {
+        return;
+      }
+
+      const allTags = this.projectTechStack(project);
+
+      // offsetTop tiap chip dipakai buat ngelompokin baris: chip dengan offsetTop yang sama
+      // berarti satu baris. rowLimitTop = offsetTop baris ke-2 (atau baris ke-1 kalau semua
+      // chip muat di 1 baris), jadi cutoff = jumlah chip yang offsetTop-nya <= itu.
+      const tops = chips.map((chip) => chip.offsetTop);
+      const firstRowTop = tops[0];
+      const secondRowTop = tops.find((top) => top > firstRowTop) ?? firstRowTop;
+      let cutoff = tops.filter((top) => top <= secondRowTop).length;
+
+      if (cutoff >= allTags.length) {
+        nextState[projectId] = { visible: allTags, hiddenCount: 0 };
+        return;
+      }
+
+      // Sisain 1 slot di baris ke-2 buat chip "+N" itu sendiri, biar dia gak numpuk jadi baris ke-3.
+      cutoff = Math.max(1, cutoff - 1);
+      nextState[projectId] = {
+        visible: allTags.slice(0, cutoff),
+        hiddenCount: allTags.length - cutoff,
+      };
+    });
+
+    this.projectTechOverflow = nextState;
+  }
+
+  openProjectModal(project: PublicTechnicalProject): void {
+    this.selectedProject = project;
+  }
+
+  closeProjectModal(): void {
+    this.selectedProject = null;
+  }
+
+  // Buka file lampiran project di tab baru (lihat blob-url.util.ts buat alasan gak pakai
+  // <a href="data:..."> langsung).
+  previewProjectFile(fileData: string): void {
+    openFilePreview(fileData);
   }
 
   metrics(): PortfolioMetric[] {
