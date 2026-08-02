@@ -1,5 +1,5 @@
 <div class="modal-backdrop" *ngIf="open" (click)="close()">
-  <div class="modal" (click)="$event.stopPropagation()">
+  <div class="modal" [style.max-width]="maxWidth" (click)="$event.stopPropagation()">
     <div class="modal__header">
       <h2>{{ title }}</h2>
       <button type="button" class="modal__close" (click)="close()">
