@@ -29,6 +29,7 @@ import {
   File,
   Paperclip,
   FolderKanban,
+  Menu,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -65,6 +66,7 @@ bootstrapApplication(AppComponent, {
         File,
         Paperclip,
         FolderKanban,
+        Menu,
       }),
     ),
   ],

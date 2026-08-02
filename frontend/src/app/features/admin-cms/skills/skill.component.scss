@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
   margin-bottom: var(--spacing-4);
 
   h1 {
@@ -20,6 +22,30 @@
   gap: var(--spacing-3);
   align-items: start;
   margin-bottom: var(--spacing-2);
+}
+
+@media (max-width: 640px) {
+  .skills__row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'title remove'
+      'type remove';
+  }
+
+  .skills__row app-input {
+    grid-area: title;
+  }
+
+  .skills__row .skills__type-field {
+    grid-area: type;
+    margin-bottom: 0;
+  }
+
+  .skills__row-remove {
+    grid-area: remove;
+    align-self: center;
+    margin-top: 0;
+  }
 }
 
 .skills__type-field {

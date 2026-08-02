@@ -17,6 +17,13 @@
   align-items: start;
 }
 
+@media (max-width: 640px) {
+  .profile-form__row,
+  .profile-form__row--split {
+    grid-template-columns: 1fr;
+  }
+}
+
 .field {
   display: flex;
   flex-direction: column;

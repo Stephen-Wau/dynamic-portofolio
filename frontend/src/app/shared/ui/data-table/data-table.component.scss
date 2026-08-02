@@ -9,17 +9,22 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: var(--spacing-2);
   margin-bottom: var(--spacing-3);
 }
 
 .app-data-table__search {
   display: flex;
+  // flex:1 (bukan lebar tetap) biar search box ikut menyempit di layar sempit alih-alih
+  // maksa toolbar overflow; min-width jaga supaya tetap kebaca, bukan gepeng banget.
+  flex: 1;
+  min-width: 160px;
 }
 
 .app-data-table__search-input {
-  width: 260px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 320px;
   padding: var(--spacing-2) var(--spacing-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -65,7 +70,16 @@
   }
 }
 
+.app-data-table__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius);
+}
+
 .app-data-table {
+  // min-width jaga kolom tetap kebaca (gak dipepetin) di layar sempit — kalau container-nya
+  // lebih sempit dari ini, .app-data-table__scroll yang nampung bakal scroll horizontal.
+  min-width: 640px;
   background: var(--color-surface);
   border-radius: var(--radius);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);

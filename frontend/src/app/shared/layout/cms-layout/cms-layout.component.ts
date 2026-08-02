@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { NavigationEnd, RouterOutlet, Router } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 import { AuthService, CurrentUser } from '../../../core/auth/auth.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { ToastService } from '../../ui/toast/toast.service';
@@ -8,12 +10,15 @@ import { ToastService } from '../../ui/toast/toast.service';
 @Component({
   selector: 'app-cms-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, LucideAngularModule],
   templateUrl: './cms-layout.component.html',
   styleUrl: './cms-layout.component.scss',
 })
 export class CmsLayoutComponent implements OnInit {
   user: CurrentUser | null = null;
+  // Cuma relevan di layar sempit (<=880px, lihat sidebar-nya jadi drawer) — di desktop sidebar
+  // selalu keliatan terlepas dari state ini (CSS di sidebar.component.scss yang nentuin).
+  isSidebarOpen = false;
 
   constructor(
     private auth: AuthService,
@@ -31,5 +36,22 @@ export class CmsLayoutComponent implements OnInit {
         this.router.navigate(['/admin-cms/login']);
       },
     });
+
+    // Tutup drawer mobile otomatis abis pindah halaman, biar user gak perlu nutup manual
+    // tiap habis klik menu (klik menu item juga udah nutup lewat (closed), ini jaga-jaga
+    // buat navigasi lain, ex: klik tombol back browser).
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isSidebarOpen = false;
+      }
+    });
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
   }
 }
