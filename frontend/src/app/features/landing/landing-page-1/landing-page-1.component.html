@@ -230,14 +230,14 @@
       </div>
 
       <div class="skills-grid">
-        <article class="skill-group-card reveal-on-scroll" *ngFor="let group of skillGroups()">
+        <article class="skill-group-card reveal-on-scroll" *ngFor="let group of skillGroups(); trackBy: trackBySkillType">
           <header>
             <h3>{{ group.label }}</h3>
             <span>{{ group.skills.length }} item</span>
           </header>
 
           <div class="skill-tags">
-            <span class="skill-tag" *ngFor="let skill of group.skills">{{ skill.title }}</span>
+            <span class="skill-tag" *ngFor="let skill of group.skills; trackBy: trackBySkillId">{{ skill.title }}</span>
           </div>
         </article>
       </div>

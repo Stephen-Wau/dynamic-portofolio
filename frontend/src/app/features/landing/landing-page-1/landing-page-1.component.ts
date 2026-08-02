@@ -22,6 +22,7 @@ const SKILL_TYPE_LABELS: Record<string, string> = {
 const SKILL_TYPE_ORDER = ['hard_skill', 'software_skill', 'soft_skill'];
 
 interface SkillGroup {
+  type: string;
   label: string;
   skills: PublicSkill[];
 }
@@ -258,11 +259,28 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
     );
   }
 
+  private cachedSkillGroups: SkillGroup[] | null = null;
+  private cachedSkillGroupsSource: PublicSkill[] | null = null;
+
   skillGroups(): SkillGroup[] {
-    return SKILL_TYPE_ORDER.map((type) => ({
-      label: SKILL_TYPE_LABELS[type],
-      skills: this.portfolio.skills.filter((skill) => skill.type === type),
-    })).filter((group) => group.skills.length > 0);
+    if (this.cachedSkillGroupsSource !== this.portfolio.skills) {
+      this.cachedSkillGroupsSource = this.portfolio.skills;
+      this.cachedSkillGroups = SKILL_TYPE_ORDER.map((type) => ({
+        type,
+        label: SKILL_TYPE_LABELS[type],
+        skills: this.portfolio.skills.filter((skill) => skill.type === type),
+      })).filter((group) => group.skills.length > 0);
+    }
+
+    return this.cachedSkillGroups!;
+  }
+
+  trackBySkillType(_index: number, group: SkillGroup): string {
+    return group.type;
+  }
+
+  trackBySkillId(_index: number, skill: PublicSkill): number {
+    return skill.id;
   }
 
   metrics(): PortfolioMetric[] {
@@ -354,20 +372,32 @@ export class LandingPage1Component implements AfterViewInit, OnDestroy {
       return;
     }
 
+    // Hysteresis band: many decorative elements on this page run infinite CSS
+    // animations (glow/orbit/pulse) that continuously nudge layout by a pixel
+    // or two. With a single threshold, that jitter alone crosses the boundary
+    // back and forth and toggles `is-visible` nonstop even while the user
+    // isn't scrolling. Requiring a big gap between the "show" and "hide"
+    // ratios means ambient jitter never spans both, only a real scroll does.
+    const SHOW_RATIO = 0.2;
+    const HIDE_RATIO = 0.02;
+
     this.ngZone.runOutsideAngular(() => {
       this.observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-            } else {
-              entry.target.classList.remove('is-visible');
+            const target = entry.target as HTMLElement;
+            const wasVisible = target.classList.contains('is-visible');
+
+            if (!wasVisible && entry.intersectionRatio >= SHOW_RATIO) {
+              target.classList.add('is-visible');
+            } else if (wasVisible && entry.intersectionRatio <= HIDE_RATIO) {
+              target.classList.remove('is-visible');
             }
           }
         },
         {
           rootMargin: '-6% 0px -6% 0px',
-          threshold: 0.14,
+          threshold: [0, HIDE_RATIO, 0.05, 0.1, 0.15, SHOW_RATIO, 0.4, 0.6, 0.8, 1],
         },
       );
 
