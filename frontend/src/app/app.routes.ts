@@ -42,6 +42,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'technical-projects',
+        loadComponent: () =>
+          import('./features/admin-cms/technical-projects/technical-projects.component').then(
+            (m) => m.TechnicalProjectsComponent,
+          ),
+      },
+      {
         path: 'education',
         loadComponent: () =>
           import('./features/admin-cms/education/education.component').then(

@@ -26,6 +26,9 @@ import {
   Linkedin,
   Github,
   MapPin,
+  File,
+  Paperclip,
+  FolderKanban,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -59,6 +62,9 @@ bootstrapApplication(AppComponent, {
         Linkedin,
         Github,
         MapPin,
+        File,
+        Paperclip,
+        FolderKanban,
       }),
     ),
   ],

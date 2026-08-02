@@ -1,0 +1,113 @@
+<div class="technical-projects__header">
+  <h1>Technical Projects</h1>
+  <app-button (click)="openCreateModal()">
+    <lucide-icon name="plus" [size]="16"></lucide-icon>
+    Add
+  </app-button>
+</div>
+
+<ng-template #aksiTpl let-row="row">
+  <div class="technical-projects__actions">
+    <app-button variant="ghost" size="sm" (click)="openShowModal($any(row))">
+      <lucide-icon name="eye" [size]="14"></lucide-icon>
+      Show
+    </app-button>
+    <app-button variant="ghost" size="sm" (click)="openEditModal($any(row))">
+      <lucide-icon name="pencil" [size]="14"></lucide-icon>
+      Edit
+    </app-button>
+    <app-button variant="danger" size="sm" (click)="remove($any(row))">
+      <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+      Delete
+    </app-button>
+  </div>
+</ng-template>
+
+<app-data-table
+  [rows]="projects"
+  [columns]="columns"
+  [serverSide]="true"
+  [totalCount]="totalCount"
+  [pageSize]="pageSize"
+  (search)="onTableQueryChange($event)"
+  (refresh)="loadProjects()"
+  searchPlaceholder="Search project name..."
+  emptyMessage="Belum ada technical project. Klik &quot;Add&quot; untuk menambahkan."
+></app-data-table>
+
+<app-modal
+  [open]="isModalOpen"
+  [title]="isReadOnly ? 'Detail Technical Project' : (editingId ? 'Edit Technical Project' : 'Tambah Technical Project')"
+  maxWidth="720px"
+  (closed)="closeModal()"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <app-input
+      label="Nama Project *"
+      formControlName="name_project"
+      [errorMessage]="fieldError('name_project', 5)"
+    ></app-input>
+
+    <app-input
+      label="Role *"
+      formControlName="user_role"
+      [errorMessage]="fieldError('user_role', 2)"
+    ></app-input>
+
+    <app-input
+      label="Deskripsi *"
+      formControlName="description"
+      [multiline]="true"
+      [rows]="4"
+      [errorMessage]="fieldError('description', 5)"
+    ></app-input>
+
+    <app-input
+      label="Tech Stack *"
+      formControlName="tech_stack"
+      [errorMessage]="fieldError('tech_stack', 5)"
+    ></app-input>
+
+    <div class="technical-projects__key-contributions">
+      <label>Key Contributions *</label>
+      <div formArrayName="key_contributions">
+        <div
+          class="technical-projects__key-contribution-row"
+          *ngFor="let contribution of keyContributions.controls; let i = index"
+        >
+          <app-input [formControlName]="i" [errorMessage]="keyContributionError(i)"></app-input>
+          <button
+            type="button"
+            class="technical-projects__key-contribution-remove"
+            (click)="removeKeyContribution(i)"
+            *ngIf="keyContributions.length > 1 && !isReadOnly"
+          >
+            <lucide-icon name="x" [size]="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+      <app-button
+        variant="ghost"
+        size="sm"
+        type="button"
+        (click)="addKeyContribution()"
+        *ngIf="!isReadOnly"
+      >
+        <lucide-icon name="plus" [size]="14"></lucide-icon>
+        Add Contribution
+      </app-button>
+    </div>
+
+    <app-files-upload label="Files" formControlName="files"></app-files-upload>
+
+    <div class="technical-projects__form-actions">
+      <app-button variant="ghost" type="button" (click)="closeModal()">
+        {{ isReadOnly ? 'Close' : 'Cancel' }}
+      </app-button>
+      <app-button type="submit" [disabled]="isSaving" *ngIf="!isReadOnly">
+        <lucide-icon name="save" [size]="16"></lucide-icon>
+        {{ isSaving ? 'Saving...' : 'Save' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>
