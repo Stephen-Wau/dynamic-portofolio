@@ -15,6 +15,7 @@ const featuredUserSettingKey = "featured_user_id"
 const activeLandingPageSettingKey = "active_landing_page"
 const landingPage1 = "landing_page_1"
 const landingPage2 = "landing_page_2"
+const landingPage3 = "landing_page_3"
 
 // SettingsUsersHandler menangani GET /api/settings/users — daftar semua user buat card picker.
 func SettingsUsersHandler(db *sql.DB) http.HandlerFunc {
@@ -151,6 +152,12 @@ func availableLandingPageOptions() []landingPageOption {
 			Name:        "Landing Page 2",
 			Description: "Tema ungu-hitam gradien dengan orbit badge berputar, tilt 3D, marquee, dan animated counter.",
 			Preview:     "Mode landing kedua, lebih hidup & profesional dengan banyak efek animasi.",
+		},
+		{
+			ID:          landingPage3,
+			Name:        "Landing Page 3",
+			Description: "Tema biru cerah gradien, model navigasi app-like (klik nav ganti konten tanpa scroll) dengan animasi Lottie.",
+			Preview:     "Mode landing ketiga, nuansa dashboard backend engineering yang interaktif.",
 		},
 	}
 }

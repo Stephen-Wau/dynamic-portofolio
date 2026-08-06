@@ -1,0 +1,346 @@
+<div class="app-shell">
+  <div class="app-shell__mesh" aria-hidden="true"></div>
+  <div class="app-shell__grid" aria-hidden="true"></div>
+  <div class="app-shell__glow app-shell__glow--a" aria-hidden="true"></div>
+  <div class="app-shell__glow app-shell__glow--b" aria-hidden="true"></div>
+
+  <nav class="app-nav">
+    <div class="app-nav__brand">
+      <span class="app-nav__mark">
+        <span class="app-nav__mark-ring" aria-hidden="true"></span>
+        {{ initial() }}
+      </span>
+      <span class="app-nav__name">{{ displayName() }}</span>
+    </div>
+
+    <div class="app-nav__tabs">
+      <button
+        type="button"
+        *ngFor="let tab of navTabs"
+        class="app-nav__tab"
+        [class.app-nav__tab--active]="activeTab === tab.id"
+        (click)="switchTab(tab.id)"
+      >
+        <lucide-icon [name]="tab.icon" [size]="16"></lucide-icon>
+        <span>{{ tab.label }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="app-stage">
+    <div
+      class="app-panel"
+      [class.app-panel--forward]="direction === 'forward'"
+      [class.app-panel--backward]="direction === 'backward'"
+      [ngSwitch]="activeTab"
+    >
+      <!-- ============ HOME ============ -->
+      <section *ngSwitchCase="'home'" class="tab-content tab-content--home">
+        <div class="hero-copy">
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            Available for new opportunities
+          </div>
+
+          <p class="eyebrow">{{ primaryRole() }}</p>
+          <h1 class="hero-name">
+            <span class="hero-name-gradient">{{ displayName() }}</span>
+          </h1>
+          <p class="hero-summary">{{ heroSummary() }}</p>
+
+          <div class="stack-focus">
+            <lucide-icon name="terminal" [size]="16"></lucide-icon>
+            <span>{{ stackFocus() }}</span>
+          </div>
+
+          <div class="hero-actions">
+            <button type="button" class="button button--primary" (click)="switchTab('contact')">
+              <lucide-icon name="rocket" [size]="16"></lucide-icon>
+              Hubungi Saya
+            </button>
+            <button type="button" class="button button--ghost" (click)="switchTab('projects')">
+              Lihat Projects
+            </button>
+          </div>
+
+          <div class="stats-row" *ngIf="statCounters.length > 0">
+            <div class="stat-chip" *ngFor="let stat of statCounters">
+              <strong>{{ stat.current }}{{ stat.suffix }}</strong>
+              <span>{{ stat.label }}</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-card-wrap">
+          <div class="hero-card" data-tilt data-tilt-max="10">
+            <div class="hero-card__lottie" #lottieHost aria-hidden="true"></div>
+
+            <div class="hero-card__avatar" [class.hero-card__avatar--image]="portfolio.profile?.image">
+              <img *ngIf="portfolio.profile?.image" [src]="portfolio.profile?.image" [alt]="'Foto ' + displayName()" />
+              <span *ngIf="!portfolio.profile?.image">{{ initial() }}</span>
+            </div>
+
+            <p class="hero-card__name">{{ displayName() }}</p>
+            <p class="hero-card__role">{{ primaryRole() }}</p>
+
+            <div class="hero-card__city" *ngIf="portfolio.profile?.city">
+              <lucide-icon name="map-pin" [size]="13"></lucide-icon>
+              {{ portfolio.profile?.city }}
+            </div>
+
+            <div class="hero-card__terminal" aria-hidden="true">
+              <div class="hero-card__terminal-bar">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="hero-card__terminal-body">
+                <p><span>$</span> systemctl status api</p>
+                <p><span>●</span> active (running)</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section *ngSwitchCase="'about'" class="tab-content tab-content--about">
+        <div class="section-heading">
+          <p>About</p>
+          <h2>Cerita singkat di balik cara saya membangun sistem.</h2>
+        </div>
+
+        <div class="about-grid">
+          <article class="glass-card about-card--story">
+            <div class="rich-text" [innerHTML]="normalizedAboutMe()"></div>
+          </article>
+
+          <article class="glass-card about-card--facts">
+            <h3>Quick Facts</h3>
+            <div class="detail-list">
+              <div class="detail-item" *ngIf="portfolio.profile?.city">
+                <span>Kota</span>
+                <strong>{{ portfolio.profile?.city }}</strong>
+              </div>
+              <div class="detail-item" *ngIf="portfolio.technical_projects.length">
+                <span>Total best project</span>
+                <strong>{{ portfolio.technical_projects.length }} project</strong>
+              </div>
+              <div class="detail-item" *ngIf="portfolio.work_histories.length">
+                <span>Total pengalaman</span>
+                <strong>{{ portfolio.work_histories.length }} riwayat</strong>
+              </div>
+              <div class="detail-item" *ngIf="portfolio.educations.length">
+                <span>Total pendidikan</span>
+                <strong>{{ portfolio.educations.length }} riwayat</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ SKILLS ============ -->
+      <section *ngSwitchCase="'skills'" class="tab-content tab-content--skills">
+        <div class="section-heading">
+          <p>Skills</p>
+          <h2>Kombinasi kemampuan inti, tools, dan kekuatan kolaboratif.</h2>
+        </div>
+
+        <div class="skills-grid" *ngIf="skillGroups().length > 0">
+          <article
+            class="glass-card skill-group-card"
+            *ngFor="let group of skillGroups(); trackBy: trackBySkillType"
+          >
+            <header>
+              <div class="skill-group-card__icon" aria-hidden="true">
+                <lucide-icon name="cpu" [size]="16"></lucide-icon>
+              </div>
+              <div>
+                <h3>{{ group.label }}</h3>
+                <span>{{ group.skills.length }} item</span>
+              </div>
+            </header>
+
+            <div class="skill-tags">
+              <span class="skill-tag" *ngFor="let skill of group.skills; trackBy: trackBySkillId">{{ skill.title }}</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ PROJECTS ============ -->
+      <section *ngSwitchCase="'projects'" class="tab-content tab-content--projects">
+        <div class="section-heading">
+          <p>Projects</p>
+          <h2>Proyek teknikal yang menunjukkan kontribusi nyata dari ide sampai eksekusi.</h2>
+        </div>
+
+        <div class="projects-grid" *ngIf="portfolio.technical_projects.length > 0">
+          <article
+            class="glass-card project-card"
+            data-tilt
+            data-tilt-max="6"
+            *ngFor="let project of portfolio.technical_projects; trackBy: trackByProjectId"
+          >
+            <header>
+              <h3>{{ project.name_project }}</h3>
+              <span *ngIf="project.user_role">{{ project.user_role }}</span>
+            </header>
+
+            <p class="project-card__description" *ngIf="project.description">{{ project.description }}</p>
+
+            <div class="project-card__tags" *ngIf="projectTechStack(project).length > 0">
+              <span class="skill-tag" *ngFor="let tech of projectCardTechStack(project)">{{ tech }}</span>
+              <span class="skill-tag skill-tag--more" *ngIf="projectCardTechOverflowCount(project) > 0">
+                +{{ projectCardTechOverflowCount(project) }}
+              </span>
+            </div>
+
+            <div
+              class="project-card__tags project-card__tags--measure"
+              [attr.data-project-id]="project.id"
+              aria-hidden="true"
+              *ngIf="projectTechStack(project).length > 0"
+            >
+              <span class="skill-tag" *ngFor="let tech of projectTechStack(project)">{{ tech }}</span>
+            </div>
+
+            <button type="button" class="button button--ghost project-card__show" (click)="openProjectModal(project)">
+              <lucide-icon name="eye" [size]="16"></lucide-icon>
+              Show
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ EXPERIENCE ============ -->
+      <section *ngSwitchCase="'experience'" class="tab-content tab-content--experience">
+        <div class="section-heading">
+          <p>Experience</p>
+          <h2>Riwayat kerja yang menonjolkan kontribusi dan arah perjalanan karier.</h2>
+        </div>
+
+        <div class="timeline-list" *ngIf="portfolio.work_histories.length > 0">
+          <article class="timeline-card" *ngFor="let job of portfolio.work_histories">
+            <div class="timeline-card__marker" aria-hidden="true"></div>
+            <div class="glass-card timeline-card__content">
+              <div class="timeline-card__header">
+                <div>
+                  <p class="timeline-card__label">Company</p>
+                  <h3>{{ job.company_name }}</h3>
+                  <p class="timeline-card__position" *ngIf="job.position">{{ job.position }}</p>
+                </div>
+                <span>{{ formatPeriod(job.start_date, job.end_date) }}</span>
+              </div>
+
+              <ul class="timeline-card__points" *ngIf="job.points.length > 0">
+                <li *ngFor="let point of job.points">{{ point }}</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ EDUCATION ============ -->
+      <section *ngSwitchCase="'education'" class="tab-content tab-content--education">
+        <div class="section-heading">
+          <p>Education</p>
+          <h2>Latar akademik yang memperkuat fondasi teknis dan pola pikir problem-solving.</h2>
+        </div>
+
+        <div class="education-grid" *ngIf="portfolio.educations.length > 0">
+          <article class="glass-card education-card" *ngFor="let edu of portfolio.educations">
+            <div class="education-card__icon">
+              <lucide-icon name="graduation-cap" [size]="18"></lucide-icon>
+            </div>
+            <span class="education-card__period">{{ formatPeriod(edu.start_date, edu.end_date) }}</span>
+            <h3>{{ edu.place }}</h3>
+            <p *ngIf="edu.major; else noMajor">{{ edu.major }}</p>
+            <ng-template #noMajor>
+              <p>Program studi belum dicantumkan.</p>
+            </ng-template>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ CONTACT ============ -->
+      <section *ngSwitchCase="'contact'" class="tab-content tab-content--contact">
+        <div class="glass-card contact-panel">
+          <div class="section-heading">
+            <p>Contact</p>
+            <h2>Terbuka untuk diskusi profesional, kolaborasi proyek, dan peluang backend engineering.</h2>
+          </div>
+
+          <p class="contact-panel__text">
+            Jika Anda sedang mencari backend developer yang terbiasa membangun API, mengelola
+            database, menyiapkan server, dan menjaga sistem tetap rapi saat berkembang, saya siap
+            melanjutkan percakapan lewat kanal di bawah ini.
+          </p>
+
+          <div class="contact-actions" *ngIf="contactActions().length > 0; else noContactData">
+            <a
+              class="contact-action"
+              *ngFor="let action of contactActions()"
+              [href]="action.href"
+              [attr.target]="action.label === 'Email' ? null : '_blank'"
+              [attr.rel]="action.label === 'Email' ? null : 'noopener'"
+            >
+              <div class="contact-action__icon">
+                <lucide-icon [name]="action.icon" [size]="18"></lucide-icon>
+              </div>
+              <div>
+                <span>{{ action.label }}</span>
+                <strong>{{ action.value }}</strong>
+              </div>
+            </a>
+          </div>
+
+          <ng-template #noContactData>
+            <div class="contact-panel__empty">
+              Lengkapi email, WhatsApp, LinkedIn, atau GitHub di halaman profile agar CTA kontak
+              tampil di sini.
+            </div>
+          </ng-template>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="project-modal-backdrop" *ngIf="selectedProject as project" (click)="closeProjectModal()">
+    <div class="project-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="project-modal__close" (click)="closeProjectModal()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+
+      <header class="project-modal__header">
+        <h3>{{ project.name_project }}</h3>
+        <span *ngIf="project.user_role">{{ project.user_role }}</span>
+      </header>
+
+      <p class="project-modal__description" *ngIf="project.description">
+        {{ project.description }}
+      </p>
+
+      <div class="project-modal__tags" *ngIf="projectTechStack(project).length > 0">
+        <span class="skill-tag" *ngFor="let tech of projectTechStack(project)">{{ tech }}</span>
+      </div>
+
+      <div class="project-modal__section" *ngIf="project.key_contributions.length > 0">
+        <h4>Key Contributions</h4>
+        <ul>
+          <li *ngFor="let contribution of project.key_contributions">{{ contribution }}</li>
+        </ul>
+      </div>
+
+      <div class="project-modal__section" *ngIf="project.files.length > 0">
+        <h4>Files</h4>
+        <ul class="project-modal__files">
+          <li *ngFor="let file of project.files">
+            <button type="button" (click)="previewProjectFile(file.file_data)">
+              <lucide-icon name="file" [size]="16"></lucide-icon>
+              {{ file.file_name }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

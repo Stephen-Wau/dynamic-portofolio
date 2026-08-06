@@ -36,6 +36,8 @@ import {
   Code2,
   Database,
   Server,
+  Terminal,
+  Cpu,
 } from 'lucide-angular';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
@@ -79,6 +81,8 @@ bootstrapApplication(AppComponent, {
         Code2,
         Database,
         Server,
+        Terminal,
+        Cpu,
       }),
     ),
   ],

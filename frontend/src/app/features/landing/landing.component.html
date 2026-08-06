@@ -15,7 +15,7 @@
 </div>
 
 <app-landing-page-1
-  *ngIf="!isLoading && data && activeLandingPage() !== 'landing_page_2'"
+  *ngIf="!isLoading && data && activeLandingPage() !== 'landing_page_2' && activeLandingPage() !== 'landing_page_3'"
   [portfolio]="data"
 ></app-landing-page-1>
 
@@ -23,3 +23,8 @@
   *ngIf="!isLoading && data && activeLandingPage() === 'landing_page_2'"
   [portfolio]="data"
 ></app-landing-page-2>
+
+<app-landing-page-3
+  *ngIf="!isLoading && data && activeLandingPage() === 'landing_page_3'"
+  [portfolio]="data"
+></app-landing-page-3>

@@ -17,6 +17,7 @@
     "@angular/router": "^18.2.14",
     "@swimlane/ngx-datatable": "^21.0.0",
     "flatpickr": "^4.6.13",
+    "lottie-web": "^5.13.0",
     "lucide-angular": "^0.462.0",
     "ngx-quill": "^26.0.10",
     "quill": "^2.0.3",

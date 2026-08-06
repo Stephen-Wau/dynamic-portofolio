@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { PublicPortfolio, PublicPortfolioService } from './public-portfolio.service';
 import { LandingPage1Component } from './landing-page-1/landing-page-1.component';
 import { LandingPage2Component } from './landing-page-2/landing-page-2.component';
+import { LandingPage3Component } from './landing-page-3/landing-page-3.component';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, LandingPage1Component, LandingPage2Component],
+  imports: [CommonModule, LandingPage1Component, LandingPage2Component, LandingPage3Component],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
 })
