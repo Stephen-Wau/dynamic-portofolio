@@ -9,3 +9,4 @@ frontend/.angular/
 
 # env
 .env
+backend/services.yaml

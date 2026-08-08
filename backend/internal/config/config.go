@@ -10,6 +10,7 @@ type Config struct {
 	DBHost          string
 	DBPort          string
 	DBName          string
+	DBUseTLS        bool
 	FrontendOrigin  string
 	JWTSecret       string
 	JWTExpiryHours  int
@@ -23,6 +24,7 @@ func Load() Config {
 		DBHost:         getEnv("DB_HOST", "127.0.0.1"),
 		DBPort:         getEnv("DB_PORT", "3306"),
 		DBName:         getEnv("DB_NAME", "dynamic_portofolio"),
+		DBUseTLS:       getEnv("DB_USE_TLS", "false") == "true",
 		FrontendOrigin: getEnv("FRONTEND_ORIGIN", "http://localhost:4200"),
 		JWTSecret:      getEnv("JWT_SECRET", ""),
 		JWTExpiryHours: getEnvInt("JWT_EXPIRY_HOURS", 24),

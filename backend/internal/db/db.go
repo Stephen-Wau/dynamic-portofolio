@@ -13,8 +13,12 @@ import (
 
 // Connect membuka koneksi MySQL berdasarkan config, dipanggil sekali di main.go.
 func Connect(cfg config.Config) (*sql.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
+	tlsParam := "false"
+	if cfg.DBUseTLS {
+		tlsParam = "skip-verify"
+	}
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&tls=%s",
+		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, tlsParam)
 
 	conn, err := sql.Open("mysql", dsn)
 	if err != nil {
