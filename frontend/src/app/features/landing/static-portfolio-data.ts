@@ -83,6 +83,11 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
   ],
   "skills": [
     {
+      "id": 37,
+      "title": "Vulnerability Remediation",
+      "type": "hard_skill"
+    },
+    {
       "id": 11,
       "title": "VS Code",
       "type": "software_skill"
@@ -90,6 +95,11 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
     {
       "id": 16,
       "title": "Version Control & Pipelines",
+      "type": "software_skill"
+    },
+    {
+      "id": 32,
+      "title": "Termius",
       "type": "software_skill"
     },
     {
@@ -105,7 +115,7 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
     {
       "id": 19,
       "title": "SSO Auth Integration",
-      "type": "soft_skill"
+      "type": "hard_skill"
     },
     {
       "id": 9,
@@ -115,7 +125,22 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
     {
       "id": 14,
       "title": "Server Deployment",
+      "type": "hard_skill"
+    },
+    {
+      "id": 28,
+      "title": "Restful API",
+      "type": "hard_skill"
+    },
+    {
+      "id": 35,
+      "title": "Problem Solving",
       "type": "soft_skill"
+    },
+    {
+      "id": 39,
+      "title": "Postman",
+      "type": "software_skill"
     },
     {
       "id": 7,
@@ -125,7 +150,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
     {
       "id": 24,
       "title": "MySQL",
+      "type": "hard_skill"
+    },
+    {
+      "id": 29,
+      "title": "Multi Project Work",
       "type": "soft_skill"
+    },
+    {
+      "id": 38,
+      "title": "Microsoft IIS",
+      "type": "software_skill"
     },
     {
       "id": 13,
@@ -138,9 +173,19 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
       "type": "hard_skill"
     },
     {
+      "id": 36,
+      "title": "Identity & Access Management (IAM)",
+      "type": "hard_skill"
+    },
+    {
       "id": 22,
       "title": "HTML, CSS, Jquery",
       "type": "hard_skill"
+    },
+    {
+      "id": 34,
+      "title": "High Productivity",
+      "type": "soft_skill"
     },
     {
       "id": 25,
@@ -153,9 +198,29 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
       "type": "hard_skill"
     },
     {
+      "id": 26,
+      "title": "Github",
+      "type": "software_skill"
+    },
+    {
+      "id": 40,
+      "title": "Firebase",
+      "type": "software_skill"
+    },
+    {
       "id": 17,
       "title": "Database Management",
       "type": "hard_skill"
+    },
+    {
+      "id": 41,
+      "title": "Cross-Functional Collaboration",
+      "type": "soft_skill"
+    },
+    {
+      "id": 30,
+      "title": "Communication",
+      "type": "soft_skill"
     },
     {
       "id": 21,
@@ -168,12 +233,103 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
       "type": "hard_skill"
     },
     {
+      "id": 33,
+      "title": "Cloudflare",
+      "type": "software_skill"
+    },
+    {
       "id": 20,
       "title": "Claude AI",
       "type": "software_skill"
+    },
+    {
+      "id": 27,
+      "title": "Bitbucket",
+      "type": "software_skill"
+    },
+    {
+      "id": 31,
+      "title": "Analytical Thinking",
+      "type": "soft_skill"
     }
   ],
   "technical_projects": [
+    {
+      "id": 12,
+      "name_project": "Unisign SSO (Centralized Identity & Access Management Platform)",
+      "user_role": "Backend Developer",
+      "description": "Engineered an advanced, secure Single Sign-On (SSO) and Identity Management ecosystem equipped with real-time security monitoring dashboards, centralized user permissions, and dynamic session control paneling.",
+      "tech_stack": "Laravel, PHP, MySQL, JWT, Vite, Blade, jQuery, Geolocation API, Firebase, RESTful API.",
+      "key_contributions": [
+        "Developed core Identity & Access Management (IAM) mechanics using token-based authentication (JWT) and ticketing systems to authorize connections safely across multiple client applications.",
+        "Designed complex session security structures, including multi-tier token revocation (per-user or via master data override), active session controls, and two distinct logout models: Device Logout and Single Logout (SLO).",
+        "Built a dynamic policy configuration engine that enables real-time adjustments for session Time-To-Live (TTL), centralized Google Login integration via Firebase, and runtime toggles for master passwords.",
+        "Integrated Geolocation tracking APIs to capture geographic data from login attempts, mapping historical coordinates into an analytical dashboard to track application traffic, login success rates, and monitor real-time threat detection (Risk Events)."
+      ],
+      "files": [
+        {
+          "id": 24,
+          "file_name": "doc_1.png",
+          "file_data": "/assets/static-portfolio/projects/project-1-1.png"
+        },
+        {
+          "id": 25,
+          "file_name": "doc_2.png",
+          "file_data": "/assets/static-portfolio/projects/project-1-2.png"
+        },
+        {
+          "id": 26,
+          "file_name": "doc_3.png",
+          "file_data": "/assets/static-portfolio/projects/project-1-3.png"
+        },
+        {
+          "id": 27,
+          "file_name": "doc_4.png",
+          "file_data": "/assets/static-portfolio/projects/project-1-4.png"
+        },
+        {
+          "id": 28,
+          "file_name": "doc_5.png",
+          "file_data": "/assets/static-portfolio/projects/project-1-5.png"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name_project": "TMS (Injourney Tenant & Airport Infrastructure Management System)",
+      "user_role": "Backend Developer",
+      "description": "Managed and modernized the Tenant Management System (TMS) for Injourney, handling both legacy application maintenance and complete system revamp to optimize airport operational data, tenant tracking, and resource allocation across national airport branches.",
+      "tech_stack": "Laravel, CodeIgniter 3 (CI3), PHP, MySQL, RESTful API, Familia SSO Integration",
+      "key_contributions": [
+        "Maintained the existing monolithic application (CI3), developing interactive analytics dashboards to track branch-specific flight expenditures, shopping data, production equipment, terminal assets, and parking logistics through complex data charts.",
+        "Engineered core backend modules for contract life cycles, including TMS Contracts, Tenant Bookings, Contract Addendums, and multi-level master data management for vendors and airport production tools.",
+        "Spearheaded the architectural revamp into a modern, decoupled Laravel RESTful API backend, accelerating data processing speeds and decoupling the legacy system into a scalable API-driven architecture.",
+        "Refactored the data layer by revamping the database schema, optimizing slow database queries, and executing complex legacy data migrations into the new structure with zero data loss and maximum query efficiency.",
+        "ntegrated unified authentication for both legacy and revamped system variants using Injourney's centralized Familia Single Sign-On (SSO) ecosystem."
+      ],
+      "files": [
+        {
+          "id": 29,
+          "file_name": "doc_1.png",
+          "file_data": "/assets/static-portfolio/projects/project-2-1.png"
+        },
+        {
+          "id": 30,
+          "file_name": "doc_2.png",
+          "file_data": "/assets/static-portfolio/projects/project-2-2.png"
+        },
+        {
+          "id": 31,
+          "file_name": "doc_3.png",
+          "file_data": "/assets/static-portfolio/projects/project-2-3.png"
+        },
+        {
+          "id": 32,
+          "file_name": "doc_4.png",
+          "file_data": "/assets/static-portfolio/projects/project-2-4.png"
+        }
+      ]
+    },
     {
       "id": 5,
       "name_project": "Titan (Multi-Company ERP Ecosystem)",
@@ -190,17 +346,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 4,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-3-1.png"
         },
         {
           "id": 5,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-3-2.png"
         },
         {
           "id": 6,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-3.png"
+          "file_data": "/assets/static-portfolio/projects/project-3-3.png"
         }
       ]
     },
@@ -219,17 +375,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 11,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-4-1.png"
         },
         {
           "id": 12,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-4-2.png"
         },
         {
           "id": 13,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-3.png"
+          "file_data": "/assets/static-portfolio/projects/project-4-3.png"
         }
       ]
     },
@@ -248,12 +404,12 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 19,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-3-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-5-1.png"
         },
         {
           "id": 20,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-3-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-5-2.png"
         }
       ]
     },
@@ -273,17 +429,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 21,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-6-1.png"
         },
         {
           "id": 22,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-6-2.png"
         },
         {
           "id": 23,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-3.png"
+          "file_data": "/assets/static-portfolio/projects/project-6-3.png"
         }
       ]
     },
@@ -302,17 +458,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 8,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-5-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-7-1.png"
         },
         {
           "id": 9,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-5-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-7-2.png"
         },
         {
           "id": 10,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-5-3.png"
+          "file_data": "/assets/static-portfolio/projects/project-7-3.png"
         }
       ]
     },
@@ -333,17 +489,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 14,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-1.png"
+          "file_data": "/assets/static-portfolio/projects/project-8-1.png"
         },
         {
           "id": 15,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-2.png"
+          "file_data": "/assets/static-portfolio/projects/project-8-2.png"
         },
         {
           "id": 16,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-3.png"
+          "file_data": "/assets/static-portfolio/projects/project-8-3.png"
         }
       ]
     }
