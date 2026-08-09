@@ -1,0 +1,1 @@
+var a=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];function o(n){let[t,r]=n.split("-").map(Number);return`${a[r-1]} ${t}`}function u(n,t){let r=o(n),e=t?o(t):"Sekarang";return`${r} - ${e}`}export{u as a};
