@@ -15,7 +15,7 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
     "github": "https://github.com/Stephen-Wau",
     "city": "Jakarta Barat, Indonesia",
     "about_me": "<p>&quot;A&nbsp;results-driven&nbsp;<strong>Backend&nbsp;Developer</strong>&nbsp;with&nbsp;3&nbsp;years&nbsp;of&nbsp;professional&nbsp;experience&nbsp;specializing&nbsp;in&nbsp;building&nbsp;secure,&nbsp;scalable,&nbsp;and&nbsp;high-performance&nbsp;web&nbsp;applications.&nbsp;Graduated&nbsp;with&nbsp;a&nbsp;Cum&nbsp;Laude&nbsp;degree&nbsp;in&nbsp;Informatics&nbsp;Engineering,&nbsp;combining&nbsp;strong&nbsp;academic&nbsp;foundations&nbsp;with&nbsp;proven&nbsp;expertise&nbsp;in&nbsp;Laravel,&nbsp;CodeIgniter,&nbsp;and&nbsp;RESTful&nbsp;API&nbsp;architecture.&nbsp;Adept&nbsp;at&nbsp;managing&nbsp;the&nbsp;entire&nbsp;development&nbsp;lifecycle,&nbsp;from&nbsp;database&nbsp;design&nbsp;and&nbsp;third-party&nbsp;integration&nbsp;to&nbsp;optimizing&nbsp;CI/CD&nbsp;pipelines&nbsp;and&nbsp;implementing&nbsp;AI-driven&nbsp;monitoring&nbsp;tools.&nbsp;Known&nbsp;for&nbsp;a&nbsp;meticulous&nbsp;and&nbsp;adaptive&nbsp;approach,&nbsp;thrive&nbsp;in&nbsp;collaborative&nbsp;team&nbsp;environments,&nbsp;and&nbsp;consistently&nbsp;dedicated&nbsp;to&nbsp;modernizing&nbsp;legacy&nbsp;systems&nbsp;and&nbsp;adopting&nbsp;cutting-edge&nbsp;technologies.&quot;</p>",
-    "image": "/assets/static-portfolio/profile.jpg"
+    "image": "assets/static-portfolio/profile.jpg"
   },
   "work_histories": [
     {
@@ -270,27 +270,27 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 24,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-1.png"
+          "file_data": "assets/static-portfolio/projects/project-1-1.png"
         },
         {
           "id": 25,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-2.png"
+          "file_data": "assets/static-portfolio/projects/project-1-2.png"
         },
         {
           "id": 26,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-3.png"
+          "file_data": "assets/static-portfolio/projects/project-1-3.png"
         },
         {
           "id": 27,
           "file_name": "doc_4.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-4.png"
+          "file_data": "assets/static-portfolio/projects/project-1-4.png"
         },
         {
           "id": 28,
           "file_name": "doc_5.png",
-          "file_data": "/assets/static-portfolio/projects/project-1-5.png"
+          "file_data": "assets/static-portfolio/projects/project-1-5.png"
         }
       ]
     },
@@ -311,22 +311,22 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 29,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-1.png"
+          "file_data": "assets/static-portfolio/projects/project-2-1.png"
         },
         {
           "id": 30,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-2.png"
+          "file_data": "assets/static-portfolio/projects/project-2-2.png"
         },
         {
           "id": 31,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-3.png"
+          "file_data": "assets/static-portfolio/projects/project-2-3.png"
         },
         {
           "id": 32,
           "file_name": "doc_4.png",
-          "file_data": "/assets/static-portfolio/projects/project-2-4.png"
+          "file_data": "assets/static-portfolio/projects/project-2-4.png"
         }
       ]
     },
@@ -346,17 +346,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 4,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-3-1.png"
+          "file_data": "assets/static-portfolio/projects/project-3-1.png"
         },
         {
           "id": 5,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-3-2.png"
+          "file_data": "assets/static-portfolio/projects/project-3-2.png"
         },
         {
           "id": 6,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-3-3.png"
+          "file_data": "assets/static-portfolio/projects/project-3-3.png"
         }
       ]
     },
@@ -375,17 +375,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 11,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-1.png"
+          "file_data": "assets/static-portfolio/projects/project-4-1.png"
         },
         {
           "id": 12,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-2.png"
+          "file_data": "assets/static-portfolio/projects/project-4-2.png"
         },
         {
           "id": 13,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-4-3.png"
+          "file_data": "assets/static-portfolio/projects/project-4-3.png"
         }
       ]
     },
@@ -404,12 +404,12 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 19,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-5-1.png"
+          "file_data": "assets/static-portfolio/projects/project-5-1.png"
         },
         {
           "id": 20,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-5-2.png"
+          "file_data": "assets/static-portfolio/projects/project-5-2.png"
         }
       ]
     },
@@ -429,17 +429,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 21,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-1.png"
+          "file_data": "assets/static-portfolio/projects/project-6-1.png"
         },
         {
           "id": 22,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-2.png"
+          "file_data": "assets/static-portfolio/projects/project-6-2.png"
         },
         {
           "id": 23,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-6-3.png"
+          "file_data": "assets/static-portfolio/projects/project-6-3.png"
         }
       ]
     },
@@ -458,17 +458,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 8,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-7-1.png"
+          "file_data": "assets/static-portfolio/projects/project-7-1.png"
         },
         {
           "id": 9,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-7-2.png"
+          "file_data": "assets/static-portfolio/projects/project-7-2.png"
         },
         {
           "id": 10,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-7-3.png"
+          "file_data": "assets/static-portfolio/projects/project-7-3.png"
         }
       ]
     },
@@ -489,17 +489,17 @@ export const STATIC_PORTFOLIO: PublicPortfolio = {
         {
           "id": 14,
           "file_name": "doc_1.png",
-          "file_data": "/assets/static-portfolio/projects/project-8-1.png"
+          "file_data": "assets/static-portfolio/projects/project-8-1.png"
         },
         {
           "id": 15,
           "file_name": "doc_2.png",
-          "file_data": "/assets/static-portfolio/projects/project-8-2.png"
+          "file_data": "assets/static-portfolio/projects/project-8-2.png"
         },
         {
           "id": 16,
           "file_name": "doc_3.png",
-          "file_data": "/assets/static-portfolio/projects/project-8-3.png"
+          "file_data": "assets/static-portfolio/projects/project-8-3.png"
         }
       ]
     }
