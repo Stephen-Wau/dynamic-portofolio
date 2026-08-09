@@ -18,10 +18,14 @@ export function dataUriToBlobUrl(dataUri: string): string {
   return URL.createObjectURL(new Blob([bytes], { type: mime }));
 }
 
-// Buka file (data URI) di tab baru buat preview, revoke Blob URL-nya otomatis abis beberapa
-// saat (kasih jeda biar tab baru sempat kelar loading konten dulu).
-export function openFilePreview(dataUri: string): boolean {
-  const blobUrl = dataUriToBlobUrl(dataUri);
+// Buka file di tab baru buat preview. Terima base64 data URI (mode dinamis, dikonversi ke
+// Blob URL) atau path asset biasa (mode statis, dibuka langsung — bukan data URI).
+export function openFilePreview(fileUri: string): boolean {
+  if (!fileUri.startsWith('data:')) {
+    return window.open(fileUri, '_blank') !== null;
+  }
+
+  const blobUrl = dataUriToBlobUrl(fileUri);
   const opened = window.open(blobUrl, '_blank');
   setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
   return opened !== null;
